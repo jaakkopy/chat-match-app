@@ -71,7 +71,7 @@ const login = async (creds: Credentials): Promise<ServiceResult> => {
     const jwtPayload = {
         email: creds.email
     }
-    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);
+    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '1h' });
     result.data = token;
     return result;
 }
