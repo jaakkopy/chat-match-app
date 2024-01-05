@@ -26,7 +26,27 @@ authRouter.post("/register",
 });
 
 
-//authRouter.post("/login", )
+authRouter.post("/login",
+    [body('email').isEmail(), body('password').notEmpty()], 
+    async (req: Request, res: Response) => {
+    
+    const valRes = validationResult(req);
+    if (!valRes.isEmpty())
+        return res.status(400).json({errors: valRes.array()});
+    
+    try {
+        const data = matchedData(req);
+        const credentials: Credentials = {email: data.email, password: data.password};
+        const result: ServiceResult = await authService.login(credentials);
+        if (result.ok) {
+            return res.status(result.status).json({token: result.data});
+        }
+        return res.status(result.status).send(result.msg);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send("Internal server error");
+    }
+});
 
 
 export default authRouter;
