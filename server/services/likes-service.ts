@@ -7,43 +7,19 @@ import {
 import { DB } from '../models/db-interface';
 
 
-const alreadyExists = async (sourceEmail: string, targetEmail: string, isDislike: boolean, db: DB): Promise<boolean> => {
-    let text = `SELECT liker, liked FROM likes WHERE (
-            liker=(SELECT id FROM users WHERE email=$1) 
-            AND 
-            liked=(SELECT id FROM users WHERE email=$2));`;
-    if (isDislike) {
-        text = `SELECT disliker, disliked FROM dislikes WHERE (
-            disliker=(SELECT id FROM users WHERE email=$1) 
-            AND 
-            disliked=(SELECT id FROM users WHERE email=$2));`;
-    }
-    const rows = await db.query(text, [sourceEmail, targetEmail]);
-    return rows.length > 0;
-}
-
-
 const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<ServiceResult> => {
     /* 
      * NOTE:
-     * The PostgreSQL trigger will make sure that a user can't like and
-     * dislike another user at the same time, so existence of a dislike is not checked here (same with dislike below)
+     * The PostgreSQL trigger (init.sql) will make sure that a user can't like and
+     * dislike another user at the same time, so existence of a dislike is not checked here (same with addDislike below)
      */ 
-
     try {
-        // check if the like already exists
-        if ( (await alreadyExists(likerEmail, likedEmail, false, db)) ) {
-            return defaultInvalidRequestResult("Like already exists");
-        }
-        await db.query(
-            `INSERT INTO likes (liker, liked) VALUES (
-                (SELECT id FROM users WHERE email=$1),
-                (SELECT id FROM users WHERE email=$2)
-            );`,
-            [likerEmail, likedEmail]
-        );
+        await db.likes.insertLike(likerEmail, likedEmail);
     } catch (e) {
-        if (db.errors.isNullConstraintError(e)) {
+        if (db.errors.isUniqueConstraintError(e)) {
+            return defaultInvalidRequestResult("User already liked");
+        }
+        else if (db.errors.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either liker or liked does not exist");
         }
         console.error(e);
@@ -54,19 +30,12 @@ const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<
 
 const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB): Promise<ServiceResult> => {
     try {
-        // check if the dislike already exists
-        if ( (await alreadyExists(dislikerEmail, dislikedEmail, true, db)) ) {
-            return defaultInvalidRequestResult("dislike already exists");
-        }
-        await db.query(
-            `INSERT INTO dislikes (disliker, disliked) VALUES (
-                (SELECT id FROM users WHERE email=$1),
-                (SELECT id FROM users WHERE email=$2)
-            );`,
-            [dislikerEmail, dislikedEmail]
-        );
+        await db.likes.insertDislike(dislikerEmail, dislikedEmail);
     } catch (e) {
-        if (db.errors.isNullConstraintError(e)) {
+        if (db.errors.isUniqueConstraintError(e)) {
+            return defaultInvalidRequestResult("User already disliked");
+        }
+        else if (db.errors.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either disliker or disliked does not exist");
         }
         console.error(e);

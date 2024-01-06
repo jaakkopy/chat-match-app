@@ -5,10 +5,7 @@ const getByEmail = async (email: string | undefined, db: DB): Promise<UserProfil
     if (!email)
         return null;
     try {
-        const rows = await db.query(
-            "SELECT email FROM users WHERE email=$1",
-            [email]
-        );
+        const rows = await db.users.getUserByEmail(email);
         if (rows.length == 0)
             return null;
         return {

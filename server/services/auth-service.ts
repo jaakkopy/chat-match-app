@@ -13,46 +13,32 @@ import { DB } from '../models/db-interface';
 // If the given email is not taken, hash the password and store the
 // user's credentials in the db
 const register = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
-    let result: ServiceResult = defaultServiceResult();
-    
-    const hashedPw = await new Promise((resolve, reject) => {
-        hash(creds.password, 10, (err, hashed) => {
-            if (err)
-                reject(err);
-            resolve(hashed);
-        })
-    });
-
     try {
-        await db.query(
-            "INSERT INTO users(email, passwordhash) VALUES ($1, $2)",
-            [creds.email, hashedPw]
-        );
+        const hashedPw: string = await new Promise((resolve, reject) => {
+            hash(creds.password, 10, (err, hashed) => {
+                if (err)
+                    reject(err);
+                resolve(hashed);
+            })
+        });
+        await db.users.insertUser(creds.email, hashedPw);
     } catch (e) {
-        result.ok = false;
-        // Unique key constraint error: https://www.postgresql.org/docs/current/errcodes-appendix.html
         if (db.errors.isUniqueConstraintError(e)) {
-            result.status = 400;
-            result.msg = "Credentials already taken";
+            return defaultInvalidRequestResult("Credentials already taken");
         } else {
-            result = defaultInternalErrorResult();
+            return defaultInternalErrorResult();
         }
     }
-
-    return result;
+    return defaultServiceResult();
 }
 
 
 const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
-    let result: ServiceResult = defaultServiceResult();
     let invalidCredsResult = defaultInvalidRequestResult("Invalid credentials");
     let pwFromDb: string = '';
     // Fetch the hashed password from the database
     try {
-        const rows = await db.query(
-            "SELECT passwordhash FROM users WHERE email=$1",
-            [creds.email]
-        );
+        const rows = await db.users.getUserByEmail(creds.email);
         // No user with the given email exists
         if (rows.length == 0) {
             return invalidCredsResult;
@@ -71,6 +57,7 @@ const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
         email: creds.email
     }
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    let result: ServiceResult = defaultServiceResult();
     result.data = token;
     return result;
 }

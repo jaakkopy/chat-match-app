@@ -7,6 +7,7 @@ CREATE TABLE users (
 CREATE TABLE likes (
     liker INT NOT NULL,
     liked INT NOT NULL,
+    PRIMARY KEY(liker, liked),
     CONSTRAINT fk_liker
         FOREIGN KEY(liker)
         REFERENCES users(id)
@@ -20,6 +21,7 @@ CREATE TABLE likes (
 CREATE TABLE dislikes (
     disliker INT NOT NULL,
     disliked INT NOT NULL,
+    PRIMARY KEY(disliker, disliked),
     CONSTRAINT fk_disliker
         FOREIGN KEY(disliker)
         REFERENCES users(id)
@@ -29,9 +31,6 @@ CREATE TABLE dislikes (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
-
-CREATE INDEX likes_index ON likes (liker, liked);
-CREATE INDEX dislikes_index ON dislikes (disliker, disliked);
 
 -- This function will delete an existing like when adding a dislike to prevent both from existing at the same time
 CREATE FUNCTION check_like_when_disliking() RETURNS TRIGGER AS
