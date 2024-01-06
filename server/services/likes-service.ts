@@ -5,7 +5,6 @@ import {
     defaultServiceResult
 } from '../models/service-result';
 import { DB } from '../models/db-interface';
-import dbErros from '../db-errors';
 
 
 const alreadyExists = async (sourceEmail: string, targetEmail: string, isDislike: boolean, db: DB): Promise<boolean> => {
@@ -44,7 +43,7 @@ const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<
             [likerEmail, likedEmail]
         );
     } catch (e) {
-        if (dbErros.isNullConstraintError(e)) {
+        if (db.errors.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either liker or liked does not exist");
         }
         console.error(e);
@@ -67,7 +66,7 @@ const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB):
             [dislikerEmail, dislikedEmail]
         );
     } catch (e) {
-        if (dbErros.isNullConstraintError(e)) {
+        if (db.errors.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either disliker or disliked does not exist");
         }
         console.error(e);

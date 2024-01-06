@@ -1,5 +1,6 @@
 import {Pool, QueryResult} from 'pg';
-import {DB} from './models/db-interface';
+import {DB} from '../models/db-interface';
+import errors from './db-errors';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -18,7 +19,8 @@ const query = async (queryText: string, parameters?: any[]): Promise<any[]> => {
 }
 
 const db: DB = {
-    query
+    query,
+    errors
 }
 
 const getDB = (): DB => {

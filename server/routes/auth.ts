@@ -3,7 +3,7 @@ import { validationResult, body, matchedData } from 'express-validator';
 import authService from '../services/auth-service';
 import { ServiceResult } from '../models/service-result';
 import { Credentials } from '../models/auth-interfaces';
-import getDB from '../db';
+import getDB from '../db/db';
 
 const authRouter = Router();
 

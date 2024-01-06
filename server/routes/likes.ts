@@ -4,7 +4,7 @@ import passport from 'passport';
 
 import { ServiceResult } from '../models/service-result';
 import likesService from '../services/likes-service';
-import getDB from '../db';
+import getDB from '../db/db';
 
 const likesRouter = Router();
 

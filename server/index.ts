@@ -17,7 +17,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/likes', likesRouter);
 
-
 const PORT: number = Number(process.env.PORT) || 8000;
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`);

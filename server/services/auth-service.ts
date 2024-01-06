@@ -8,7 +8,6 @@ import {
 import { hash, compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { DB } from '../models/db-interface';
-import dbErrors from '../db-errors';
 
 
 // If the given email is not taken, hash the password and store the
@@ -32,7 +31,7 @@ const register = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
     } catch (e) {
         result.ok = false;
         // Unique key constraint error: https://www.postgresql.org/docs/current/errcodes-appendix.html
-        if (dbErrors.isUniqueConstraintError(e)) {
+        if (db.errors.isUniqueConstraintError(e)) {
             result.status = 400;
             result.msg = "Credentials already taken";
         } else {
