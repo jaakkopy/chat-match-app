@@ -3,7 +3,7 @@ import {
     ServiceResult, 
     defaultServiceResult,
     defaultInternalErrorResult,
-    defaultInvalidCredentialsResult
+    defaultInvalidRequestResult
 } from '../models/service-result';
 import { hash, compare } from 'bcrypt';
 import { DatabaseError } from 'pg';
@@ -46,6 +46,7 @@ const register = async (creds: Credentials): Promise<ServiceResult> => {
 
 const login = async (creds: Credentials): Promise<ServiceResult> => {
     let result: ServiceResult = defaultServiceResult();
+    let invalidCredsResult = defaultInvalidRequestResult("Invalid credentials");
     let pwFromDb: string = '';
     // Fetch the hashed password from the database
     try {
@@ -55,7 +56,7 @@ const login = async (creds: Credentials): Promise<ServiceResult> => {
         );
         // No user with the given email exists
         if (res.rows.length == 0) {
-            return defaultInvalidCredentialsResult();
+            return invalidCredsResult;
         }
         pwFromDb = res.rows[0].passwordhash;
     } catch (e) {
@@ -65,7 +66,7 @@ const login = async (creds: Credentials): Promise<ServiceResult> => {
     const isMatch = await compare(creds.password, pwFromDb);
     // Wrong password
     if (!isMatch) {
-        return defaultInvalidCredentialsResult();
+        return invalidCredsResult;
     }
     // Create a JWT
     const jwtPayload = {

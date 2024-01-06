@@ -29,3 +29,6 @@ CREATE TABLE dislikes (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
+
+CREATE INDEX likes_index ON likes (liker, liked);
+CREATE INDEX dislikes_index ON dislikes (disliker, disliked);

@@ -21,10 +21,10 @@ export const defaultInternalErrorResult = (): ServiceResult => {
     }
 }
 
-export const defaultInvalidCredentialsResult = (): ServiceResult => {
+export const defaultInvalidRequestResult = (message?: string): ServiceResult => {
     return {
         ok : false,
         status : 400,
-        msg : "Invalid credentials"
+        msg : message ?? "Invalid request"
     }
 }
