@@ -1,11 +1,11 @@
 import {UserProfile} from '../models/user';
-import query from '../db';
+import db from '../db';
 
 const getByEmail = async (email: string | undefined): Promise<UserProfile | null> => {
     if (!email)
         return null;
     try {
-        const res = await query(
+        const res = await db.query(
             "SELECT email FROM users WHERE email=$1",
             [email]
         );

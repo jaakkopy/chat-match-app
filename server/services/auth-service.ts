@@ -7,8 +7,8 @@ import {
 } from '../models/service-result';
 import { hash, compare } from 'bcrypt';
 import { DatabaseError } from 'pg';
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
-import query from '../db';
+import jwt, { Secret } from 'jsonwebtoken';
+import db from '../db';
 
 
 // If the given email is not taken, hash the password and store the
@@ -25,7 +25,7 @@ const register = async (creds: Credentials): Promise<ServiceResult> => {
     });
 
     try {
-        await query(
+        await db.query(
             "INSERT INTO users(email, passwordhash) VALUES ($1, $2)",
             [creds.email, hashedPw]
         );
@@ -50,7 +50,7 @@ const login = async (creds: Credentials): Promise<ServiceResult> => {
     let pwFromDb: string = '';
     // Fetch the hashed password from the database
     try {
-        const res = await query(
+        const res = await db.query(
             "SELECT passwordhash FROM users WHERE email=$1",
             [creds.email]
         );

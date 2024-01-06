@@ -1,4 +1,4 @@
-import {Pool, QueryResult} from 'pg';
+import {Pool, PoolClient, QueryResult} from 'pg';
 
 import dotenv from 'dotenv';
 // load here as well just in case
@@ -16,4 +16,15 @@ const query = (queryText: string, parameters?: any[]): Promise<QueryResult> => {
     return pool.query(queryText, parameters);
 }
 
-export default query;
+const getClient = (): Promise<PoolClient> => {
+    return pool.connect();
+}
+
+
+const db = {
+    query,
+    getClient
+}
+
+
+export default db;

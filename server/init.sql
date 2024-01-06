@@ -32,3 +32,29 @@ CREATE TABLE dislikes (
 
 CREATE INDEX likes_index ON likes (liker, liked);
 CREATE INDEX dislikes_index ON dislikes (disliker, disliked);
+
+-- This function will delete an existing like when adding a dislike to prevent both from existing at the same time
+CREATE FUNCTION check_like_when_disliking() RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT COUNT(*) FROM (SELECT liker FROM likes WHERE (liker=NEW.disliker AND liked=NEW.disliked))) > 0) THEN
+        DELETE FROM likes WHERE (liker=NEW.disliker AND liked=NEW.disliked);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- This function will delete an existing dislike when adding a like to prevent both from existing at the same time
+CREATE FUNCTION check_dislike_when_liking() RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT COUNT(*) FROM (SELECT disliker FROM dislikes WHERE (disliker=NEW.liker AND disliked=NEW.liked))) > 0) THEN
+        DELETE FROM dislikes WHERE (disliker=NEW.liker AND disliked=NEW.liked);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the triggers
+CREATE TRIGGER check_like_when_disliking BEFORE INSERT ON dislikes FOR EACH ROW EXECUTE PROCEDURE check_like_when_disliking();
+CREATE TRIGGER check_dislike_when_liking BEFORE INSERT ON likes FOR EACH ROW EXECUTE PROCEDURE check_dislike_when_liking();
