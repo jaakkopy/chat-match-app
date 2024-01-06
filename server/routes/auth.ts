@@ -3,6 +3,7 @@ import { validationResult, body, matchedData } from 'express-validator';
 import authService from '../services/auth-service';
 import { ServiceResult } from '../models/service-result';
 import { Credentials } from '../models/auth-interfaces';
+import getDB from '../db';
 
 const authRouter = Router();
 
@@ -17,7 +18,7 @@ authRouter.post("/register",
     try {
         const data = matchedData(req);
         const credentials: Credentials = {email: data.email, password: data.password};
-        const result: ServiceResult = await authService.register(credentials);
+        const result: ServiceResult = await authService.register(credentials, getDB());
         return res.status(result.status).send(result.msg);
     } catch (e) {
         console.error(e);
@@ -37,7 +38,7 @@ authRouter.post("/login",
     try {
         const data = matchedData(req);
         const credentials: Credentials = {email: data.email, password: data.password};
-        const result: ServiceResult = await authService.login(credentials);
+        const result: ServiceResult = await authService.login(credentials, getDB());
         if (result.ok) {
             return res.status(result.status).json({token: result.data});
         }

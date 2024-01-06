@@ -1,7 +1,7 @@
-import {Pool, PoolClient, QueryResult} from 'pg';
+import {Pool, QueryResult} from 'pg';
+import {DB} from './models/db-interface';
 
 import dotenv from 'dotenv';
-// load here as well just in case
 dotenv.config();
 
 const pool = new Pool({
@@ -12,19 +12,17 @@ const pool = new Pool({
     database: process.env.POSTGRES_DATABASE
 });
 
-const query = (queryText: string, parameters?: any[]): Promise<QueryResult> => {
-    return pool.query(queryText, parameters);
+const query = async (queryText: string, parameters?: any[]): Promise<any[]> => {
+    const res: QueryResult = await pool.query(queryText, parameters);
+    return res.rows;
 }
 
-const getClient = (): Promise<PoolClient> => {
-    return pool.connect();
+const db: DB = {
+    query
 }
 
-
-const db = {
-    query,
-    getClient
+const getDB = (): DB => {
+    return db;
 }
 
-
-export default db;
+export default getDB;

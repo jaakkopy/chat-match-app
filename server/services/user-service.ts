@@ -1,18 +1,18 @@
 import {UserProfile} from '../models/user';
-import db from '../db';
+import { DB } from '../models/db-interface';
 
-const getByEmail = async (email: string | undefined): Promise<UserProfile | null> => {
+const getByEmail = async (email: string | undefined, db: DB): Promise<UserProfile | null> => {
     if (!email)
         return null;
     try {
-        const res = await db.query(
+        const rows = await db.query(
             "SELECT email FROM users WHERE email=$1",
             [email]
         );
-        if (res.rows.length == 0)
+        if (rows.length == 0)
             return null;
         return {
-            email: res.rows[0].email
+            email: rows[0].email
         }
     } catch (e) {
         console.error(e);

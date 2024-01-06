@@ -4,6 +4,7 @@ import passport from 'passport';
 
 import { ServiceResult } from '../models/service-result';
 import likesService from '../services/likes-service';
+import getDB from '../db';
 
 const likesRouter = Router();
 
@@ -20,7 +21,7 @@ likesRouter.post("/like", [
         const data = matchedData(req);
         // @ts-ignore : email exists for sure due to passport if we get here
         const likerEmail = req.user.email;
-        const result: ServiceResult = await likesService.addLike(likerEmail, data.email);
+        const result: ServiceResult = await likesService.addLike(likerEmail, data.email, getDB());
         res.status(result.status).send(result.msg);
     } catch (e) {
         console.error(e);
@@ -42,7 +43,7 @@ likesRouter.post("/dislike", [
         const data = matchedData(req);
         // @ts-ignore : email exists for sure due to passport if we get here
         const dislikerEmail = req.user.email;
-        const result: ServiceResult = await likesService.addDislike(dislikerEmail, data.email);
+        const result: ServiceResult = await likesService.addDislike(dislikerEmail, data.email, getDB());
         res.status(result.status).send(result.msg);
     } catch (e) {
         console.error(e);

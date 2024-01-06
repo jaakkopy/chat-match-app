@@ -6,14 +6,14 @@ import {
     defaultInvalidRequestResult
 } from '../models/service-result';
 import { hash, compare } from 'bcrypt';
-import { DatabaseError } from 'pg';
-import jwt, { Secret } from 'jsonwebtoken';
-import db from '../db';
+import jwt from 'jsonwebtoken';
+import { DB } from '../models/db-interface';
+import dbErrors from '../db-errors';
 
 
 // If the given email is not taken, hash the password and store the
 // user's credentials in the db
-const register = async (creds: Credentials): Promise<ServiceResult> => {
+const register = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
     let result: ServiceResult = defaultServiceResult();
     
     const hashedPw = await new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ const register = async (creds: Credentials): Promise<ServiceResult> => {
     } catch (e) {
         result.ok = false;
         // Unique key constraint error: https://www.postgresql.org/docs/current/errcodes-appendix.html
-        if (e instanceof DatabaseError && e.code == "23505") {
+        if (dbErrors.isUniqueConstraintError(e)) {
             result.status = 400;
             result.msg = "Credentials already taken";
         } else {
@@ -44,25 +44,24 @@ const register = async (creds: Credentials): Promise<ServiceResult> => {
 }
 
 
-const login = async (creds: Credentials): Promise<ServiceResult> => {
+const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
     let result: ServiceResult = defaultServiceResult();
     let invalidCredsResult = defaultInvalidRequestResult("Invalid credentials");
     let pwFromDb: string = '';
     // Fetch the hashed password from the database
     try {
-        const res = await db.query(
+        const rows = await db.query(
             "SELECT passwordhash FROM users WHERE email=$1",
             [creds.email]
         );
         // No user with the given email exists
-        if (res.rows.length == 0) {
+        if (rows.length == 0) {
             return invalidCredsResult;
         }
-        pwFromDb = res.rows[0].passwordhash;
+        pwFromDb = rows[0].passwordhash;
     } catch (e) {
         return defaultInternalErrorResult();
     }
-     
     const isMatch = await compare(creds.password, pwFromDb);
     // Wrong password
     if (!isMatch) {

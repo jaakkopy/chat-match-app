@@ -1,14 +1,14 @@
-import db from '../db';
-import { DatabaseError } from 'pg';
 import { 
     ServiceResult,
     defaultInvalidRequestResult,
     defaultInternalErrorResult,
     defaultServiceResult
 } from '../models/service-result';
+import { DB } from '../models/db-interface';
+import dbErros from '../db-errors';
 
 
-const alreadyExists = async (sourceEmail: string, targetEmail: string, isDislike: boolean): Promise<boolean> => {
+const alreadyExists = async (sourceEmail: string, targetEmail: string, isDislike: boolean, db: DB): Promise<boolean> => {
     let text = `SELECT liker, liked FROM likes WHERE (
             liker=(SELECT id FROM users WHERE email=$1) 
             AND 
@@ -19,21 +19,21 @@ const alreadyExists = async (sourceEmail: string, targetEmail: string, isDislike
             AND 
             disliked=(SELECT id FROM users WHERE email=$2));`;
     }
-    const res = await db.query(text, [sourceEmail, targetEmail]);
-    return res.rows.length > 0;
+    const rows = await db.query(text, [sourceEmail, targetEmail]);
+    return rows.length > 0;
 }
 
 
-const addLike = async (likerEmail: string, likedEmail: string): Promise<ServiceResult> => {
+const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<ServiceResult> => {
     /* 
      * NOTE:
      * The PostgreSQL trigger will make sure that a user can't like and
-     * Dislike another user at the same time, so existence of a dislike is not checked here (same with dislike below)
+     * dislike another user at the same time, so existence of a dislike is not checked here (same with dislike below)
      */ 
 
     try {
         // check if the like already exists
-        if ( (await alreadyExists(likerEmail, likedEmail, false)) ) {
+        if ( (await alreadyExists(likerEmail, likedEmail, false, db)) ) {
             return defaultInvalidRequestResult("Like already exists");
         }
         await db.query(
@@ -44,8 +44,7 @@ const addLike = async (likerEmail: string, likedEmail: string): Promise<ServiceR
             [likerEmail, likedEmail]
         );
     } catch (e) {
-        // NOT NULL constraint violation (code 23502)
-        if (e instanceof DatabaseError && e.code == '23502') {
+        if (dbErros.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either liker or liked does not exist");
         }
         console.error(e);
@@ -54,10 +53,10 @@ const addLike = async (likerEmail: string, likedEmail: string): Promise<ServiceR
     return defaultServiceResult();
 }
 
-const addDislike = async (dislikerEmail: string, dislikedEmail: string): Promise<ServiceResult> => {
+const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB): Promise<ServiceResult> => {
     try {
         // check if the dislike already exists
-        if ( (await alreadyExists(dislikerEmail, dislikedEmail, true)) ) {
+        if ( (await alreadyExists(dislikerEmail, dislikedEmail, true, db)) ) {
             return defaultInvalidRequestResult("dislike already exists");
         }
         await db.query(
@@ -68,8 +67,7 @@ const addDislike = async (dislikerEmail: string, dislikedEmail: string): Promise
             [dislikerEmail, dislikedEmail]
         );
     } catch (e) {
-        // NOT NULL constraint violation (code 23502)
-        if (e instanceof DatabaseError && e.code == '23502') {
+        if (dbErros.isNullConstraintError(e)) {
             return defaultInvalidRequestResult("Either disliker or disliked does not exist");
         }
         console.error(e);
