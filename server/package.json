@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn index.ts",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "author": "Jaakko Pyrhönen",
   "license": "ISC",

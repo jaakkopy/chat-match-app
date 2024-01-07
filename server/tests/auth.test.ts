@@ -39,6 +39,10 @@ describe("Register via POST request", () => {
     });
 
     it("Should return 400 if the email is already taken", async () => {
+        await request(app)
+            .post("/api/auth/register")
+            .send(dummyCredentials);
+
         const res = await request(app)
             .post("/api/auth/register")
             .send(dummyCredentials);

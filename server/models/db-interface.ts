@@ -8,6 +8,8 @@ export type DBRows = any[];
 export interface DBLikes {
     insertLike: (likerEmail: string, likedEmail: string) => Promise<DBRows>;
     insertDislike: (dislikerEmail: string, dislikedEmail: string) => Promise<DBRows>;
+    getLikedUsersOfUser: (email: string) => Promise<DBRows>;
+    getDislikedUsersOfUser: (email: string) => Promise<DBRows>;
 }
 
 export interface DBUsers {

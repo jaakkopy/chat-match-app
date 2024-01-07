@@ -21,10 +21,31 @@ const insertDislike = async (dislikerEmail: string, dislikedEmail: string): Prom
         );
 }
 
+const getLikedUsersOfUser = async (email: string): Promise<DBRows> => {
+    return query(
+        `SELECT u.email FROM likes l 
+            JOIN users u ON u.id = l.liked 
+            WHERE l.liker = (SELECT id FROM users WHERE email=$1);
+        `,
+        [email]
+    );
+}
+
+const getDislikedUsersOfUser = async (email: string): Promise<DBRows> => {
+    return query(
+        `SELECT u.email FROM dislikes l 
+            JOIN users u ON u.id = l.disliked
+            WHERE l.disliker = (SELECT id FROM users WHERE email=$1);
+        `,
+        [email]
+    );
+}
 
 const dbLikes: DBLikes = {
     insertLike,
-    insertDislike
+    insertDislike,
+    getLikedUsersOfUser,
+    getDislikedUsersOfUser
 }
 
 export default dbLikes;
