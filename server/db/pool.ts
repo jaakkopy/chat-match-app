@@ -1,8 +1,6 @@
 import {Pool, QueryResult} from 'pg';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
+// Environment variables should be loaded first, or this will crash
 const pool = new Pool({
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
