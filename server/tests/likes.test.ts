@@ -1,4 +1,3 @@
-import { describe } from 'node:test';
 import request from 'supertest';
 import app from '../app';
 import {query} from '../db/pool';
