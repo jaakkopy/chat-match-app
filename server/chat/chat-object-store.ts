@@ -5,7 +5,8 @@ const chatObjectMap: Map<string, IChatConnection> = new Map();
 
 const chatObjectStore: IChatObjectStore = {
     register: (email: string, connection: IChatConnection) => chatObjectMap.set(email, connection),
-    unregister: (email: string) => chatObjectMap.delete(email)
+    unregister: (email: string) => chatObjectMap.delete(email),
+    getRegisteredConnection: (email: string) => chatObjectMap.get(email)
 }
 
 export default chatObjectStore;

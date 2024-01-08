@@ -1,22 +1,21 @@
 export interface IChatMessage {
-    senderEmail: string;
-    receiverEmail: string;
     dateString: string;
     content: string;
 }
 
-export interface IChatConnection {
-    receiveMessage: (msg: string) => void;
-    observeMessage: (msg: IChatMessage) => void;
-    cleanUpAfterConnectionClose: () => void;
+export interface IFirstChatMessage {
+    jwt: string;
+    receiverEmail: string;
 }
 
-export interface IChatNotifications {
-    registerForMessages: (connection: IChatConnection) => void;
-    notifyObservers: (msg: IChatMessage) => void;
+export interface IChatConnection {
+    receiveMessageFromWs: (msg: string) => void;
+    receiveMessageFromOther: (msg: IChatMessage) => void;
+    cleanUpAfterConnectionClose: () => void;
 }
 
 export interface IChatObjectStore {
     register: (email: string, connection: IChatConnection) => void;
     unregister: (email: string) => void;
+    getRegisteredConnection: (email: string) => IChatConnection | undefined;
 }

@@ -7,7 +7,7 @@ const setupNewConnection = (ws: WebSocket) => {
     connections.set(ws, new ChatConnection(ws));
 
     ws.on('message', (data: RawData) => {
-        connections.get(ws)?.receiveMessage(data.toString());
+        connections.get(ws)?.receiveMessageFromWs(data.toString());
     });
 
     ws.on('close', () => {
