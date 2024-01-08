@@ -10,6 +10,7 @@ export interface DBLikes {
     insertDislike: (dislikerEmail: string, dislikedEmail: string) => Promise<DBRows>;
     getLikedUsersOfUser: (email: string) => Promise<DBRows>;
     getDislikedUsersOfUser: (email: string) => Promise<DBRows>;
+    verifyMutualLikes: (email1: string, email2: string) => Promise<boolean>;
 }
 
 export interface DBUsers {
@@ -17,8 +18,13 @@ export interface DBUsers {
     getUserByEmail: (email: string) => Promise<DBRows>;
 }
 
+export interface DBMessages {
+    insertMessage: (senderEmail: string, receiverEmail: string, content: string) => Promise<DBRows>;
+}
+
 export interface DB {
     likes: DBLikes;
     users: DBUsers;
     errors: DBErrors;
+    messages: DBMessages;
 }

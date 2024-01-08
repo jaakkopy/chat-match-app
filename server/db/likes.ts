@@ -41,11 +41,19 @@ const getDislikedUsersOfUser = async (email: string): Promise<DBRows> => {
     );
 }
 
+const verifyMutualLikes = async (email1: string, email2: string): Promise<boolean> => {
+    // Do two separate calls for now
+    const likesOf1 = await getLikedUsersOfUser(email1);
+    const likesOf2 = await getLikedUsersOfUser(email2);
+    return (likesOf2.find((x) => x.email == email1) != undefined) && (likesOf1.find((x) => x.email == email2) != undefined);
+}
+
 const dbLikes: DBLikes = {
     insertLike,
     insertDislike,
     getLikedUsersOfUser,
-    getDislikedUsersOfUser
+    getDislikedUsersOfUser,
+    verifyMutualLikes
 }
 
 export default dbLikes;

@@ -11,6 +11,12 @@ import {
 } from '../models/chat-interfaces';
 import chatObjectStore from './chat-object-store';
 
+/* Parts of the websocket code were inspired by:
+ *  - https://ably.com/blog/websocket-authentication
+ *  - https://ably.com/blog/web-app-websockets-nodejs 
+ */
+
+
 class ChatConnection implements IChatConnection {
     ws: WebSocket;
     // undefined means unauthenticated
@@ -23,11 +29,6 @@ class ChatConnection implements IChatConnection {
         this.observingConnections = [];
     }
 
-    receiveMessageFromOther(msg: IChatMessage) {
-        console.log(this.userEmail, "received message from other:", msg.senderEmail);
-        this.ws.send(JSON.stringify(msg));
-    }
-
     parseFirstMessage(msg: string): IFirstChatMessage | null {
         const asJson = JSON.parse(msg);
         if (!asJson.jwt || !asJson.receiverEmail)
@@ -35,10 +36,9 @@ class ChatConnection implements IChatConnection {
         return asJson;
     }
 
-
     parseMessage(msg: string): IChatMessage | null {
-        const asJson = JSON.parse(msg);
-        if (!asJson.senderEmail || !asJson?.dateString || !asJson?.content)
+        let asJson = JSON.parse(msg);
+        if (!asJson.senderEmail || !asJson?.content)
             return null;
         return asJson;
     }
@@ -52,7 +52,7 @@ class ChatConnection implements IChatConnection {
     async handleFirstMessage(msg: string) {
         // The first message the client sends should contain the token and the
         // receiver's email
-        // The token is verified before the communication continues
+        // The token and the emails are verified before the communication continues
         const parsed = this.parseFirstMessage(msg);
         if (!parsed) {
             this.ws.send("HTTP/1.1 400 Invalid request\r\n\r\n");
@@ -62,11 +62,12 @@ class ChatConnection implements IChatConnection {
         // The first message's format was valid. Verify the token:
         const result: ServiceResult = await authService.verifyJwt(parsed.jwt, getDB());
         if (result.status != 200) {
-            this.ws.send("HTTP/1.1 401 Unauthorized\r\n\r\n");
+            this.ws.send("HTTP/1.1 401 Invalid token\r\n\r\n");
             this.ws.close();
         } else {
             this.userEmail = result.data;
             this.receiverEmail = parsed.receiverEmail;
+            // verify that the receiver exists
             const checkForExistence = await userService.getByEmail(this.receiverEmail, getDB());
             if (!checkForExistence) {
                 this.ws.send("HTTP/1.1 400 Receiver does not exists\r\n\r\n");
@@ -74,15 +75,27 @@ class ChatConnection implements IChatConnection {
                 return;
             }
             if (this.userEmail) {
+                // Verify that both users have liked each other: otherwise communication is not allowed
+                const bothLike = await getDB().likes.verifyMutualLikes(this.userEmail, this.receiverEmail);
+                if (!bothLike) {
+                    this.ws.send("HTTP/1.1 401 Users not liked\r\n\r\n");
+                    this.ws.close();
+                    return;
+                }
                 chatObjectStore.register(this.userEmail, this);
                 console.log(this.userEmail, "registered for chatting");
             } else {
-                this.ws.send("HTTP/1.1 401 Unauthorized\r\n\r\n");
+                this.ws.send("HTTP/1.1 401 Nonexistent email\r\n\r\n");
                 this.ws.close();
             }
         }
     }
-    
+
+    receiveMessageFromOther(msg: IChatMessage) {
+        console.log(this.userEmail, "received message from other:", msg.senderEmail);
+        this.ws.send(JSON.stringify(msg));
+    }
+
     receiveMessageFromWs(msg: string) {
         if (this.userEmail) {
             const message: IChatMessage | null = this.parseMessage(msg);
@@ -96,7 +109,8 @@ class ChatConnection implements IChatConnection {
                 if (receiver) {
                     receiver.receiveMessageFromOther(message);
                 }
-                // TODO: store message to database
+                // store the message
+                getDB().messages.insertMessage(this.userEmail, this.receiverEmail!, message.content);
             }
         } else {
             this.handleFirstMessage(msg);

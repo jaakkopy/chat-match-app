@@ -32,6 +32,23 @@ CREATE TABLE dislikes (
         ON DELETE CASCADE
 );
 
+
+CREATE TABLE messages (
+    sender INT NOT NULL,
+    receiver INT NOT NULL,
+    date_sent TIMESTAMP NOT NULL,
+    content TEXT,
+    CONSTRAINT fk_sender
+        FOREIGN KEY(sender)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_receiver
+        FOREIGN KEY(receiver)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+
 -- This function will delete an existing like when adding a dislike to prevent both from existing at the same time
 CREATE FUNCTION check_like_when_disliking() RETURNS TRIGGER AS
 $$

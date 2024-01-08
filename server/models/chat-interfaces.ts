@@ -1,6 +1,5 @@
 export interface IChatMessage {
     senderEmail: string;
-    dateString: string;
     content: string;
 }
 
