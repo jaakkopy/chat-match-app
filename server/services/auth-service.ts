@@ -3,11 +3,12 @@ import {
     ServiceResult, 
     defaultServiceResult,
     defaultInternalErrorResult,
-    defaultInvalidRequestResult
+    defaultInvalidRequestResult,
+    defaultUnauthorizedRequestResult
 } from '../models/service-result';
 import { hash, compare } from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { DB } from '../models/db-interface';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import { DB, DBRows } from '../models/db-interface';
 
 
 // If the given email is not taken, hash the password and store the
@@ -63,9 +64,31 @@ const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
 }
 
 
+const verifyJwt = async (token: string, db: DB): Promise<ServiceResult> => {
+    try {
+        // @ts-ignore : the env variables should be loaded at this point
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const user: DBRows  = await db.users.getUserByEmail(decodedToken.email);
+        if (user.length == 0)
+            return defaultUnauthorizedRequestResult();
+        let res = defaultServiceResult();
+        res.data = user[0].email;
+        return res;
+    } catch (e) {
+        console.error(e);
+        if (e instanceof JsonWebTokenError) {
+            return defaultUnauthorizedRequestResult();
+        }
+        return defaultInternalErrorResult();
+    }
+    
+}
+
+
 const authService = {
     register,
-    login
+    login,
+    verifyJwt
 }
 
 export default authService;

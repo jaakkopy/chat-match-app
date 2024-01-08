@@ -28,3 +28,11 @@ export const defaultInvalidRequestResult = (message?: string): ServiceResult => 
         msg : message ?? "Invalid request"
     }
 }
+
+export const defaultUnauthorizedRequestResult = (): ServiceResult => {
+    return {
+        ok : false,
+        status : 401,
+        msg : "Unauthorized"
+    }
+}
