@@ -24,6 +24,7 @@ class ChatConnection implements IChatConnection {
     }
 
     receiveMessageFromOther(msg: IChatMessage) {
+        console.log(this.userEmail, "received message from other:", msg.senderEmail);
         this.ws.send(JSON.stringify(msg));
     }
 
@@ -37,7 +38,7 @@ class ChatConnection implements IChatConnection {
 
     parseMessage(msg: string): IChatMessage | null {
         const asJson = JSON.parse(msg);
-        if (!asJson?.dateString || !asJson?.content)
+        if (!asJson.senderEmail || !asJson?.dateString || !asJson?.content)
             return null;
         return asJson;
     }
@@ -74,6 +75,7 @@ class ChatConnection implements IChatConnection {
             }
             if (this.userEmail) {
                 chatObjectStore.register(this.userEmail, this);
+                console.log(this.userEmail, "registered for chatting");
             } else {
                 this.ws.send("HTTP/1.1 401 Unauthorized\r\n\r\n");
                 this.ws.close();
@@ -83,10 +85,11 @@ class ChatConnection implements IChatConnection {
     
     receiveMessageFromWs(msg: string) {
         if (this.userEmail) {
-            const message = this.parseMessage(msg);
+            const message: IChatMessage | null = this.parseMessage(msg);
             if (!message) {
                 this.ws.send("HTTP/1.1 400 Invalid message format\r\n\r\n");
             } else {
+                console.log(this.userEmail, "received message from ws");
                 // If the receiver is online, notify of the message
                 // At this point the receiverEmail variable should not be undefined
                 const receiver = chatObjectStore.getRegisteredConnection(this.receiverEmail!);
