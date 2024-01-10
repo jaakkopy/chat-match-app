@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth, AuthContextValues } from './auth-provider';
+import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
-import CredentialsForm from './credentials-form';
+import CredentialsForm from './CredentialsForm';
 
 
 const LoginPage = () => {
@@ -16,8 +16,8 @@ const LoginPage = () => {
     }, []);
 
     if (auth == null)
-        return <div></div>
-    
+        return null;    
+
     const handleLogin = async (email: string, password: string) => {
         const possibleError: null | string = await auth.onLogin(email, password);
         setError(possibleError);

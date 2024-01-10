@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth, AuthContextValues } from './auth-provider';
 import { useNavigate } from "react-router-dom";
-import CredentialsForm from './credentials-form';
+import { useAuth, AuthContextValues } from './AuthProvider';
+import CredentialsForm from './CredentialsForm';
 
 
 const RegisterPage = () => {
@@ -16,7 +16,7 @@ const RegisterPage = () => {
     }, []);
 
     if (auth == null)
-        return <div></div>
+        return null;
     
     const handleRegister = async (email: string, password: string) => {
         const possibleError: null | string = await auth.onRegister(email, password);
