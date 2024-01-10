@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-// This component is mostly copied from: https://www.robinwieruch.de/react-router-authentication/
-// Some modifications were made
+// This component, and other parts of the authentication/authorization code were inspired by:
+// https://www.robinwieruch.de/react-router-authentication/
+// Some modifications were made.
 
 export interface AuthContextValues {
     token: string | null;
@@ -14,6 +15,7 @@ export interface AuthContextValues {
 const AuthContext = React.createContext<AuthContextValues | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
+    const TOKEN_KEY = "token";
     const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
 
     const login = async (email: string, password: string) => {
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }: any) => {
         });
         if (res.status == 200) {
             const { token } = await res.json();
-            localStorage.setItem("token", token);
+            localStorage.setItem(TOKEN_KEY, token);
             setToken(token);
             return null;
         }
@@ -53,7 +55,10 @@ export const AuthProvider = ({ children }: any) => {
         return failureMessage;
     }
 
-    const logout = () => setToken(null);
+    const logout = () => {
+        localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+    }
     // note: the token could be invalid, or outdated
     const isLoggedIn = () => token != null;
 

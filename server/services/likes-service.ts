@@ -5,7 +5,7 @@ import {
     defaultServiceResult
 } from '../models/service-result';
 import { DB } from '../models/db-interface';
-
+import { IUser } from '../models/user';
 
 const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<ServiceResult> => {
     /* 
@@ -45,10 +45,24 @@ const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB):
 }
 
 
+const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
+    try {
+        const matches = await db.likes.getMatchesOfUser(email);
+        let matchEmails = matches.map(m => m.email1 == email ? m.email2 : m.email1);
+        let res = defaultServiceResult();
+        res.data = matchEmails;
+        return res;
+    } catch (e) {
+        console.error(e);
+        return defaultInternalErrorResult();
+    }
+}
+
 
 const likesService = {
     addLike,
-    addDislike
+    addDislike,
+    getMatches
 }
 
 export default likesService;

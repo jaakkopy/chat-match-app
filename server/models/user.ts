@@ -1,3 +1,3 @@
-export interface UserProfile {
+export interface IUser {
     email: string
 }

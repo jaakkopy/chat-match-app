@@ -33,7 +33,7 @@ likesRouter.post("/like", [
 likesRouter.post("/dislike", [
     passport.authenticate("jwt", {session: false}),
     body('email').isEmail()
-], async (req: Request, res: Response) => {
+    ], async (req: Request, res: Response) => {
 
     const valRes = validationResult(req);
     if (!valRes.isEmpty())
@@ -49,6 +49,22 @@ likesRouter.post("/dislike", [
         console.error(e);
         res.status(500).send("Internal server error");
     }
+});
+
+
+likesRouter.get("/matches",
+    passport.authenticate("jwt", {session: false}),
+    async (req: Request, res: Response) => {
+        try {
+            // @ts-ignore
+            const result: ServiceResult = await likesService.getMatches(req.user.email, getDB());
+            if (result.ok)
+                return res.status(200).json({matches: result.data});
+            return res.status(result.status).send(result.msg);
+        } catch (e) {
+            console.error(e);
+            res.status(500).send("Internal server error");
+        }
 });
 
 

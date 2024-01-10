@@ -1,7 +1,7 @@
-import {UserProfile} from '../models/user';
+import {IUser} from '../models/user';
 import { DB } from '../models/db-interface';
 
-const getByEmail = async (email: string | undefined, db: DB): Promise<UserProfile | null> => {
+const getByEmail = async (email: string | undefined, db: DB): Promise<IUser | null> => {
     if (!email)
         return null;
     try {

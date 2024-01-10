@@ -11,6 +11,7 @@ export interface DBLikes {
     getLikedUsersOfUser: (email: string) => Promise<DBRows>;
     getDislikedUsersOfUser: (email: string) => Promise<DBRows>;
     verifyMutualLikes: (email1: string, email2: string) => Promise<boolean>;
+    getMatchesOfUser: (email: string) => Promise<DBRows>;
 }
 
 export interface DBUsers {
