@@ -1,32 +1,68 @@
 import React, { useState } from 'react';
 
-// This component is copied from: https://www.robinwieruch.de/react-router-authentication/
+// This component is mostly copied from: https://www.robinwieruch.de/react-router-authentication/
+// Some modifications were made
 
-interface AuthContextValues {
+export interface AuthContextValues {
     token: string | null;
-    onLogin: () => Promise<void>;
+    onLogin: (email: string, password: string) => Promise<string | null>;
+    onRegister: (email: string, password: string) => Promise<string | null>;
     onLogout: () => void;
+    isLoggedIn: () => boolean;
 }
 
 const AuthContext = React.createContext<AuthContextValues | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
 
-    const login = async () => {
-        // TODO:
-        //const jwt = await ... 
-        //setToken(jwt);
+    const login = async (email: string, password: string) => {
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email, password
+            })
+        });
+        if (res.status == 200) {
+            const { token } = await res.json();
+            localStorage.setItem("token", token);
+            setToken(token);
+            return null;
+        }
+        const failureMessage = await res.text();
+        return failureMessage;
     };
 
-    const logout = () => {
-        setToken(null);
-    };
+    const register = async (email: string, password: string) => {
+        const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email, password
+            })
+        });
+        if (res.status == 200) {
+            return null;
+        }
+        const failureMessage = await res.text();
+        return failureMessage;
+    }
+
+    const logout = () => setToken(null);
+    // note: the token could be invalid, or outdated
+    const isLoggedIn = () => token != null;
 
     const value: AuthContextValues = {
         token,
         onLogin: login,
+        onRegister: register,
         onLogout: logout,
+        isLoggedIn
     };
 
 
