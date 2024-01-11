@@ -7,6 +7,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import Header from './components/Header';
 import Matches from './components/Matches';
+import Chat from './components/Chat';
 import { useAuth } from './components/AuthProvider';
 
 
@@ -28,6 +29,7 @@ function App() {
             <Routes>
                 <Route index element={ <Protected><Home/></Protected> }/>
                 <Route path="/match" element={ <Protected><Matches/></Protected> }/>
+                <Route path="/chat" element={ <Protected><Chat/></Protected> }/>
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
                 <Route path="*" element={<NotFound/>}/>
