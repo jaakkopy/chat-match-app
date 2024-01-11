@@ -13,9 +13,23 @@ const Header = () => {
             <AppBar position="static">
                 <Toolbar>
                 <Button color="inherit" component={RouterLink} to="/">{"Home"}</Button>
-                {!auth?.isLoggedIn() ? <Button color="inherit" component={RouterLink} to="/login">{"Login"}</Button> : null}
-                {!auth?.isLoggedIn() ? <Button color="inherit" component={RouterLink} to="/register">{"Register"}</Button> : null}
-                {auth?.isLoggedIn() ? <Button color="inherit" onClick={auth?.onLogout}>{"Logout"}</Button> : null}
+                {!auth?.isLoggedIn() ? 
+                    /* Show only if not logged in */
+                    <>
+                        <Button color="inherit" component={RouterLink} to="/login">{"Login"}</Button>
+                        <Button color="inherit" component={RouterLink} to="/register">{"Register"}</Button>
+                    </>
+                    : null
+                }
+                {auth?.isLoggedIn() ? 
+                    /* Show only if logged in */
+                    <>
+
+                        <Button color="inherit" onClick={auth?.onLogout}>{"Logout"}</Button>
+                        <Button color="inherit" component={RouterLink} to="/match">{"Matches"}</Button>
+                    </>
+                    : null
+                }
                 </Toolbar>
             </AppBar>
         </Box>

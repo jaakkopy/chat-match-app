@@ -21,6 +21,10 @@ const LoginPage = () => {
     const handleLogin = async (email: string, password: string) => {
         const possibleError: null | string = await auth.onLogin(email, password);
         setError(possibleError);
+        // If OK, redirect to home
+        if (error === null) {
+            navigate("/");
+        }
     }
 
     return (
