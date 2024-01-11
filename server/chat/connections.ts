@@ -11,6 +11,7 @@ const setupNewConnection = (ws: WebSocket) => {
     });
 
     ws.on('close', () => {
+        console.log("Client disconnected");
         connections.get(ws)?.cleanUpAfterConnectionClose();
         connections.delete(ws);
     });

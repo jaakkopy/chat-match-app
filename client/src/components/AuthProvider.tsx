@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 
 export interface AuthContextValues {
     token: string | null;
+    userEmail: string | null;
     onLogin: (email: string, password: string) => Promise<string | null>;
     onRegister: (email: string, password: string) => Promise<string | null>;
     onLogout: () => void;
@@ -15,8 +16,8 @@ export interface AuthContextValues {
 const AuthContext = React.createContext<AuthContextValues | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
-    const TOKEN_KEY = "token";
     const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+    const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem("email"));
 
     const login = async (email: string, password: string) => {
         const res = await fetch("/api/auth/login", {
@@ -30,8 +31,10 @@ export const AuthProvider = ({ children }: any) => {
         });
         if (res.status == 200) {
             const { token } = await res.json();
-            localStorage.setItem(TOKEN_KEY, token);
+            localStorage.setItem("token", token);
             setToken(token);
+            localStorage.setItem("email", email);
+            setUserEmail(email);
             return null;
         }
         const failureMessage = await res.text();
@@ -56,14 +59,17 @@ export const AuthProvider = ({ children }: any) => {
     }
 
     const logout = () => {
-        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem("token");
         setToken(null);
+        localStorage.removeItem("email");
+        setUserEmail(null);
     }
     // note: the token could be invalid, or outdated
     const isLoggedIn = () => token != null;
 
     const value: AuthContextValues = {
         token,
+        userEmail,
         onLogin: login,
         onRegister: register,
         onLogout: logout,
