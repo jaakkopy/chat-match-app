@@ -8,14 +8,4 @@ module.exports = function(app) {
             changeOrigin: true
         })
     );
-
-    // Does not work yet
-    app.use(
-        '/chat',
-        createProxyMiddleware({
-            target: 'ws://localhost:8000',
-            ws: true,
-            changeOrigin: true
-        })
-    );
 };

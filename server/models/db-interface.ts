@@ -21,6 +21,7 @@ export interface DBUsers {
 
 export interface DBMessages {
     insertMessage: (senderEmail: string, receiverEmail: string, content: string) => Promise<DBRows>;
+    getMessages: (requesterEmail: string, targetUserEmail: string, batch: number) => Promise<DBRows>;
 }
 
 export interface DB {
