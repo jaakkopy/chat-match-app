@@ -12,7 +12,6 @@ likesRouter.post("/like", [
     passport.authenticate("jwt", {session: false}),
     body('email').isEmail()
 ], async (req: Request, res: Response) => {
-
     const valRes = validationResult(req);
     if (!valRes.isEmpty())
         return res.status(400).json({errors: valRes.array()});

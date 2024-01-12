@@ -22,6 +22,7 @@ const getRandomUsersNotLikedOrDisliked = (email: string, amount: number): Promis
             UNION
             SELECT disliked FROM dislikes WHERE disliker = (SELECT id FROM users WHERE email=$1)
         )
+        AND email != $1
         LIMIT $2;
         `,
         [email, amount]

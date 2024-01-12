@@ -27,6 +27,7 @@ const Header = () => {
 
                         <Button color="inherit" onClick={auth?.onLogout}>{"Logout"}</Button>
                         <Button color="inherit" component={RouterLink} to="/match">{"Matches"}</Button>
+                        <Button color="inherit" component={RouterLink} to="/browse">{"Browse"}</Button>
                     </>
                     : null
                 }
