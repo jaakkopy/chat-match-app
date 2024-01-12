@@ -1,10 +1,17 @@
 import query from './pool';
 import { DBRows, DBUsers } from '../models/db-interface';
 
-const insertUser = (email: string, hashedPw: string): Promise<DBRows> => {
+const insertUser = (
+    email: string,
+    hashedPw: string,
+    fullname: string,
+    birthdate: string
+    ): Promise<DBRows> => {
     return query(
-        "INSERT INTO users(email, passwordhash) VALUES ($1, $2)",
-        [email, hashedPw]
+        `INSERT INTO users(email, fullname, birthdate, passwordhash)
+            VALUES ($1, $2, $3, $4)
+        `,
+        [email, fullname, birthdate, hashedPw]
     );
 }
 

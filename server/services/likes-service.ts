@@ -5,7 +5,7 @@ import {
     defaultServiceResult
 } from '../models/service-result';
 import { DB } from '../models/db-interface';
-import { IUser } from '../models/user';
+
 
 const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<ServiceResult> => {
     /* 

@@ -6,6 +6,7 @@ beforeAll(async () => {
     await query("DELETE FROM users;");
 });
 
+// TODO: add the new fields
 const dummyCredentials = {
     email: "test@test.com",
     password: "test"

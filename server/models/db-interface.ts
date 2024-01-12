@@ -15,7 +15,7 @@ export interface DBLikes {
 }
 
 export interface DBUsers {
-    insertUser: (email: string, hashedPw: string) => Promise<DBRows>;
+    insertUser: (email: string, hashedPw: string, fullname: string, birthdate: string) => Promise<DBRows>;
     getUserByEmail: (email: string) => Promise<DBRows>;
     getRandomUsersNotLikedOrDisliked: (email: string, amount: number) => Promise<DBRows>;
 }

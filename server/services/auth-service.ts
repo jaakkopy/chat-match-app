@@ -1,4 +1,4 @@
-import { Credentials } from '../models/auth-interfaces';
+import { Credentials, RegistrationFields } from '../models/auth-interfaces';
 import { 
     ServiceResult, 
     defaultServiceResult,
@@ -13,16 +13,21 @@ import { DB, DBRows } from '../models/db-interface';
 
 // If the given email is not taken, hash the password and store the
 // user's credentials in the db
-const register = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
+const register = async (fields: RegistrationFields, db: DB): Promise<ServiceResult> => {
     try {
         const hashedPw: string = await new Promise((resolve, reject) => {
-            hash(creds.password, 10, (err, hashed) => {
+            hash(fields.password, 10, (err, hashed) => {
                 if (err)
                     reject(err);
                 resolve(hashed);
             })
         });
-        await db.users.insertUser(creds.email, hashedPw);
+        await db.users.insertUser(
+            fields.email,
+            hashedPw,
+            fields.fullname,
+            fields.birthdate
+        );
     } catch (e) {
         if (db.errors.isUniqueConstraintError(e)) {
             return defaultInvalidRequestResult("Credentials already taken");

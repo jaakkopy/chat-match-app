@@ -8,7 +8,7 @@ export interface AuthContextValues {
     token: string | null;
     userEmail: string | null;
     onLogin: (email: string, password: string) => Promise<string | null>;
-    onRegister: (email: string, password: string) => Promise<string | null>;
+    onRegister: (email: string, password: string, fullname: string, birthdate: string) => Promise<string | null>;
     onLogout: () => void;
     isLoggedIn: () => boolean;
 }
@@ -41,14 +41,18 @@ export const AuthProvider = ({ children }: any) => {
         return failureMessage;
     };
 
-    const register = async (email: string, password: string) => {
+    const register = async (
+        email: string,
+        password: string,
+        fullname: string,
+        birthdate: string) => {
         const res = await fetch("/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email, password
+                email, password, fullname, birthdate
             })
         });
         if (res.status == 200) {

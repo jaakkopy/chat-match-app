@@ -1,6 +1,9 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
+    profiletext TEXT,
+    fullname TEXT NOT NULL,
+    birthdate DATE NOT NULL,
     passwordhash TEXT NOT NULL
 );
 
