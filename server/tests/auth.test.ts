@@ -6,7 +6,6 @@ beforeAll(async () => {
     await query("DELETE FROM users;");
 });
 
-// TODO: add the new fields
 const dummyCredentials = {
     email: "test@test.com",
     password: "test",
@@ -15,6 +14,16 @@ const dummyCredentials = {
 };
 
 describe("Register via POST request", () => {
+    it("Should return 400 if the user is not at least 18 years old", async () => {
+        let notOk = {...dummyCredentials};
+        const d = new Date();
+        notOk.birthdate = `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${ ("0" + d.getDay()).slice(-2) }`;
+        const res = await request(app)
+            .post("/api/auth/register")
+            .send(notOk);
+        expect(res.statusCode).toEqual(400);
+    });
+
     it("Should return 400 if the email is not valid", async () => {
         let notValid = {...dummyCredentials};
         notValid.email = "x";
