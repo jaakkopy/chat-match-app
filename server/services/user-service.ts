@@ -1,5 +1,6 @@
 import {IUser} from '../models/user';
 import { DB } from '../models/db-interface';
+import { defaultInternalErrorResult, defaultServiceResult } from '../models/service-result';
 
 const getByEmail = async (email: string | undefined, db: DB): Promise<IUser | null> => {
     if (!email)
@@ -18,8 +19,22 @@ const getByEmail = async (email: string | undefined, db: DB): Promise<IUser | nu
 }
 
 
+const getUsersForBrowsing = async (email: string, db: DB) => {
+    try {
+        const amount = 20; // get 20 users
+        let res = defaultServiceResult();
+        const users = await db.users.getRandomUsersNotLikedOrDisliked(email, amount);
+        res.data = users;
+        return res;
+    } catch (e) {
+        return defaultInternalErrorResult();
+    }
+}
+
+
 const userService = {
-    getByEmail
+    getByEmail,
+    getUsersForBrowsing
 }
 
 export default userService;

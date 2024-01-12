@@ -27,6 +27,7 @@ const register = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
         if (db.errors.isUniqueConstraintError(e)) {
             return defaultInvalidRequestResult("Credentials already taken");
         } else {
+            console.error(e);
             return defaultInternalErrorResult();
         }
     }

@@ -6,7 +6,8 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn index.ts",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "insert-test-users": "ts-node insert-random-users.ts"
   },
   "author": "Jaakko Pyrhönen",
   "license": "ISC",
