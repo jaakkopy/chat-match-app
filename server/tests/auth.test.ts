@@ -9,7 +9,9 @@ beforeAll(async () => {
 // TODO: add the new fields
 const dummyCredentials = {
     email: "test@test.com",
-    password: "test"
+    password: "test",
+    fullname: "Test 1",
+    birthdate: "2000-01-01"
 };
 
 describe("Register via POST request", () => {

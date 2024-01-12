@@ -5,12 +5,16 @@ import getDB from '../db/db';
 
 const dummyCredentials1 = {
     email: "test1@test1.com",
-    password: "test1"
+    password: "test1",
+    fullname: "Test 1",
+    birthdate: "2000-01-01"
 };
 
 const dummyCredentials2 = {
     email: "test2@test2.com",
-    password: "test2"
+    password: "test2",
+    fullname: "Test 2",
+    birthdate: "2000-01-01"
 };
 
 beforeAll(async () => {

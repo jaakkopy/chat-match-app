@@ -10,7 +10,10 @@ const getByEmail = async (email: string | undefined, db: DB): Promise<IUser | nu
         if (rows.length == 0)
             return null;
         return {
-            email: rows[0].email
+            email: rows[0].email,
+            profiletext: rows[0].profiletext,
+            fullname: rows[0].fullname,
+            birthdate: rows[0].birthdate
         }
     } catch (e) {
         console.error(e);
