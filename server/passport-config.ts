@@ -1,8 +1,8 @@
 import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
 import passport from 'passport';
 import userService from './services/user-service';
-import { IUser } from './models/user';
 import getDB from './db/db';
+import { ServiceResult } from './models/service-result';
 
 export const initPassport = () => {
     const opts: StrategyOptions = {
@@ -11,9 +11,9 @@ export const initPassport = () => {
     }
     passport.use(new Strategy(opts, async (jwtPayload, done) => {
         try {
-            const user: IUser | null = await userService.getByEmail(jwtPayload?.email, getDB());
-            if (user)
-                return done(null, user);
+            const res: ServiceResult = await userService.getByEmail(jwtPayload?.email, getDB());
+            if (res.ok)
+                return done(null, res.data);
             return done(null, false);
         } catch (e) {
             console.error(e);

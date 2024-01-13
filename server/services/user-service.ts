@@ -1,28 +1,30 @@
 import {IUser} from '../models/user';
 import { DB } from '../models/db-interface';
-import { defaultInternalErrorResult, defaultServiceResult } from '../models/service-result';
+import { ServiceResult, defaultInternalErrorResult, defaultInvalidRequestResult, defaultServiceResult } from '../models/service-result';
 
-const getByEmail = async (email: string | undefined, db: DB): Promise<IUser | null> => {
+const getByEmail = async (email: string | undefined, db: DB): Promise<ServiceResult> => {
     if (!email)
-        return null;
+        return defaultInvalidRequestResult("Not a valid email");
     try {
         const rows = await db.users.getUserByEmail(email);
         if (rows.length == 0)
-            return null;
-        return {
+            return defaultInvalidRequestResult("No such user exists");
+        let res = defaultServiceResult();
+        res.data = {
             email: rows[0].email,
             profiletext: rows[0].profiletext,
             fullname: rows[0].fullname,
-            birthdate: rows[0].birthdate
+            birthdate: rows[0].birthdate.toLocaleDateString()
         }
+        return res;
     } catch (e) {
         console.error(e);
-        return null;
+        return defaultInternalErrorResult();
     }
 }
 
 
-const getUsersForBrowsing = async (email: string, db: DB) => {
+const getUsersForBrowsing = async (email: string, db: DB): Promise<ServiceResult> => {
     try {
         const amount = 20; // get 20 users
         let res = defaultServiceResult();

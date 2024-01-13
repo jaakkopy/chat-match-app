@@ -68,8 +68,8 @@ class ChatConnection implements IChatConnection {
             this.userEmail = result.data;
             this.receiverEmail = parsed.receiverEmail;
             // verify that the receiver exists
-            const checkForExistence = await userService.getByEmail(this.receiverEmail, getDB());
-            if (!checkForExistence) {
+            const checkForExistence: ServiceResult = await userService.getByEmail(this.receiverEmail, getDB());
+            if (!checkForExistence.ok) {
                 this.ws.send("HTTP/1.1 400 Receiver does not exists\r\n\r\n");
                 this.ws.close();
                 return;

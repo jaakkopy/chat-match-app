@@ -7,13 +7,7 @@ import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 
 import { useAuth } from "./AuthProvider";
-
-interface UserProfile {
-  email: string;
-  profiletext: string;
-  fullname: string;
-  birthdate: string;
-}
+import UserProfile from '../models/User';
 
 
 const UserBrowser = () => {

@@ -6,10 +6,18 @@ import { ServiceResult } from '../models/service-result';
 
 const userRouter = Router();
 
-userRouter.get("/profile", passport.authenticate("jwt", {session: false}), (req: Request, res: Response) => {
-    // TODO: implement further
-    // @ts-ignore
-    res.status(200).send(req.user.email);
+userRouter.get("/profile", passport.authenticate("jwt", {session: false}), async (req: Request, res: Response) => {
+    try {
+        // @ts-ignore
+        const result: ServiceResult = await userService.getByEmail(req.user.email, getDB());
+        if (result.ok) {
+            return res.status(result.status).json({profile: result.data});
+        }
+        return res.status(result.status).send(result.msg);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send("Internal server error");
+    }
 });
 
 
