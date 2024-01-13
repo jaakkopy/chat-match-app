@@ -8,9 +8,17 @@ import { useSwipeable } from "react-swipeable";
 
 import { useAuth } from "./AuthProvider";
 
+interface UserProfile {
+  email: string;
+  profiletext: string;
+  fullname: string;
+  birthdate: string;
+}
+
+
 const UserBrowser = () => {
   const auth = useAuth();
-  const [users, setUsers] = useState<any[]>([]); // TODO: define type
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchUsers = async () => {
@@ -91,13 +99,13 @@ const UserBrowser = () => {
       <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography variant="h5" component="div">
-          Name of the user here
+          {users[0].fullname}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {users[0].email}
+          Born {users[0].birthdate}
         </Typography>
         <Typography variant="body2">
-          Profile description here
+          {users[0].profiletext ?? "The user has not given a profile text"} 
         </Typography>
       </CardContent>
       <CardActions>

@@ -24,7 +24,7 @@ const getUserByEmail = (email: string): Promise<DBRows> => {
 
 const getRandomUsersNotLikedOrDisliked = (email: string, amount: number): Promise<DBRows> => {
     return query(
-        `SELECT email FROM users WHERE id NOT IN (
+        `SELECT email, profiletext, fullname, birthdate FROM users WHERE id NOT IN (
             SELECT liked FROM likes WHERE liker = (SELECT id FROM users WHERE email=$1)
             UNION
             SELECT disliked FROM dislikes WHERE disliker = (SELECT id FROM users WHERE email=$1)

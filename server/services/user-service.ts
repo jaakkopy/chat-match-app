@@ -26,7 +26,14 @@ const getUsersForBrowsing = async (email: string, db: DB) => {
     try {
         const amount = 20; // get 20 users
         let res = defaultServiceResult();
-        const users = await db.users.getRandomUsersNotLikedOrDisliked(email, amount);
+        const users: IUser[] = (await db.users.getRandomUsersNotLikedOrDisliked(email, amount)).map(u => {
+            return {
+                email: u.email,
+                profiletext: u.profiletext,
+                fullname: u.fullname,
+                birthdate: u.birthdate.toLocaleDateString()
+            }
+        });
         res.data = users;
         return res;
     } catch (e) {
