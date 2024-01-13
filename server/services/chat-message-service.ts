@@ -5,6 +5,7 @@ import {
     defaultServiceResult
 } from '../models/service-result';
 import { DB } from '../models/db-interface';
+import { IOldChatMessage } from '../models/chat-interfaces';
 
 
 const getChatHistoryBatch = async (
@@ -13,7 +14,13 @@ const getChatHistoryBatch = async (
     batch: number,
     db: DB): Promise<ServiceResult> => {
     try {
-        const chatHistory = await db.messages.getMessages(requesterEmail, targetUserEmail, batch);
+        const chatHistory: IOldChatMessage[] = (await db.messages.getMessages(requesterEmail, targetUserEmail, batch)).map(m => {
+            return {
+                senderEmail: m.sender_email,
+                content: m.content,
+                dateSent: m.date_sent
+            }
+        });
         let res = defaultServiceResult();
         res.data = chatHistory;
         return res;

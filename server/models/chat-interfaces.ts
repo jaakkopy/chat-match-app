@@ -3,6 +3,12 @@ export interface IChatMessage {
     content: string;
 }
 
+export interface IOldChatMessage {
+    senderEmail: string;
+    content: string;
+    dateSent: string;
+}
+
 export interface IFirstChatMessage {
     jwt: string;
     receiverEmail: string;

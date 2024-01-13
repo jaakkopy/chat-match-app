@@ -1,18 +1,25 @@
+import useWebSocket, { ReadyState } from "react-use-websocket";
+
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
+import { OldChatMessage } from "../models/Chat";
 
 
 const Chat = () => {
     const auth = useAuth();
     const { state } = useLocation();
     const profile: UserProfile = state.profile; // Read values passed on state
-    const [messageHistory, setMessageHistory] = useState<string[]>([]);
+    const [messageHistory, setMessageHistory] = useState<OldChatMessage[]>([]);
     const [batch, setBatch] = useState<number>(0);
     const [message, setMessage] = useState<string>('');
     const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
@@ -37,7 +44,6 @@ const Chat = () => {
                 if (res.status == 200) {
                     const { history } = await res.json();
                     setMessageHistory(history);
-                    console.log(messageHistory);
                 }
             }
         }
@@ -74,9 +80,24 @@ const Chat = () => {
     return (
         <div>
             { profile.fullname }
-            <br></br>
-            <TextField label="Type a message" variant="outlined" value={message} onChange={(e) => setMessage(e.target.value)} />
-            <Button color="inherit" onClick={sendMessage}>{"Send"}</Button>
+            { /* Message history list */}
+            <List>
+                {messageHistory.map(m => {
+                    return (
+                        <ListItem key={m.dateSent}>
+                            <ListItemText primary={m.content} secondary={m.dateSent}></ListItemText>
+                        </ListItem>
+                    );
+                })}
+            </List>
+
+            <Divider />
+
+            { /* New message input */} 
+            <Grid>
+                <TextField label="Type a message" variant="outlined" value={message} onChange={(e) => setMessage(e.target.value)} />
+                <Button color="inherit" onClick={sendMessage}>{"Send"}</Button>
+            </Grid>
         </div>
     );
 }
