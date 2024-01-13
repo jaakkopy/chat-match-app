@@ -27,17 +27,18 @@ function App() {
   return (
       <AuthProvider>
           <BrowserRouter>
-            <Header/>
-            <Routes>
-                <Route index element={ <Protected><Home/></Protected> }/>
-                <Route path="/match" element={ <Protected><Matches/></Protected> }/>
-                <Route path="/browse" element={ <Protected><UserBrowser/></Protected> }/>
-                <Route path="/chat" element={ <Protected><Chat/></Protected> }/>
-                <Route path="/profile" element={ <Protected><Profile/></Protected> }/>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="*" element={<NotFound/>}/>
-            </Routes>
+            <Header>
+                <Routes>
+                    <Route index element={ <Protected><Home/></Protected> }/>
+                    <Route path="/match" element={ <Protected><Matches/></Protected> }/>
+                    <Route path="/browse" element={ <Protected><UserBrowser/></Protected> }/>
+                    <Route path="/chat" element={ <Protected><Chat/></Protected> }/>
+                    <Route path="/profile" element={ <Protected><Profile/></Protected> }/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="*" element={<NotFound/>}/>
+                </Routes>
+            </Header>
           </BrowserRouter>
       </AuthProvider>
   );
