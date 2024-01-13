@@ -49,11 +49,11 @@ const verifyMutualLikes = async (email1: string, email2: string): Promise<boolea
 }
 
 // This query returns the pairs of emails for users who have liked each other ("matched") 
-// The argument email is either email1 or email2 depending on the grouping
+// The argument email will be either the liker or the liked depending on the grouping
 const getMatchesOfUser = async (email: string): Promise<DBRows> => {
     return query(
-        `SELECT u1.email AS email1,
-                u2.email AS email2
+        `SELECT u1.email AS email1, u1.profiletext as pt1, u1.fullname as fn1, u1.birthdate as bd1,
+                u2.email AS email2, u2.profiletext as pt2, u2.fullname as fn2, u2.birthdate as bd2
         FROM (
             SELECT LEAST(liker, liked) AS user1,
                    GREATEST(liker, liked) AS user2

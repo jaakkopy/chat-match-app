@@ -5,6 +5,7 @@ import {
     defaultServiceResult
 } from '../models/service-result';
 import { DB } from '../models/db-interface';
+import { IUser } from '../models/user';
 
 
 const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<ServiceResult> => {
@@ -48,7 +49,24 @@ const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB):
 const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
     try {
         const matches = await db.likes.getMatchesOfUser(email);
-        let matchEmails = matches.map(m => m.email1 == email ? m.email2 : m.email1);
+        let matchEmails: IUser[] = matches.map(m => {
+            if (m.email1 == email) {
+                // If the first email corresponds to the requester, return the second one's info
+                return {
+                    email: m.email2,
+                    profiletext: m.pt2,
+                    fullname: m.fn2,
+                    birthdate: m.bd2
+                }
+            } else {
+                return {
+                    email: m.email1,
+                    profiletext: m.pt1,
+                    fullname: m.fn1,
+                    birthdate: m.bd1
+                }
+            }
+        });
         let res = defaultServiceResult();
         res.data = matchEmails;
         return res;

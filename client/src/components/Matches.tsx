@@ -1,5 +1,4 @@
 import { Fragment } from 'react';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,12 +7,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
 import { useAuth } from './AuthProvider';
+import UserProfile from '../models/User';
 
 const Matches = () => {
     const auth = useAuth();
     const navigate = useNavigate();
-    // TODO: specify type
-    const [matchedUsers, setMatchedUsers] = useState<any[] | null>(null);
+    const [matchedUsers, setMatchedUsers] = useState<UserProfile[]>([]);
     const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
@@ -30,7 +29,6 @@ const Matches = () => {
                 if (res.status != 200) {
                     const reason = await res.text();
                     setError(reason);
-                    setMatchedUsers(null);
                 } else {
                     setError(null);
                     const {matches} = await res.json();
@@ -53,7 +51,7 @@ const Matches = () => {
 
     const onUserclicked = (email: string) => {
         // navigate to the chat page for the selected user
-        navigate("/chat",  { state: { receiverEmail: email } });
+        navigate("/chat",  { state: { profile: matchedUsers.find(u => u.email === email) } });
     }
 
     return (
@@ -62,13 +60,13 @@ const Matches = () => {
                 {
                     matchedUsers?.map(m => {
                         return (
-                            <Fragment key={m}>
-                                <ListItem onClick={() => onUserclicked(m)} key={m}>
+                            <Fragment key={m.email}>
+                                <ListItem onClick={() => onUserclicked(m.email)} key={m.email}>
                                     <ListItemText
-                                      primary={m}
+                                      primary={m.fullname}
                                       secondary={
                                         <>
-                                          {" — Lorem ipsum dolor sit amet…"}
+                                          {" — TODO: add the latest message of the chat here"}
                                         </>
                                       }
                                     />

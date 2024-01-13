@@ -5,12 +5,13 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
+import UserProfile from '../models/User';
 
 
 const Chat = () => {
     const auth = useAuth();
     const { state } = useLocation();
-    const { receiverEmail } = state; // Read values passed on state
+    const profile: UserProfile = state.profile; // Read values passed on state
     const [messageHistory, setMessageHistory] = useState<string[]>([]);
     const [batch, setBatch] = useState<number>(0);
     const [message, setMessage] = useState<string>('');
@@ -27,7 +28,7 @@ const Chat = () => {
         const f = async () => {
             if (mounted && auth !== null) {
                 const res = await fetch(
-                    `/api/chat/history/${receiverEmail}/${batch}`,{
+                    `/api/chat/history/${profile.email}/${batch}`,{
                         headers: {
                             Authorization: `Bearer ${auth.token}`
                         }
@@ -49,7 +50,7 @@ const Chat = () => {
             console.log("Connection open. Sending first message");
             sendJsonMessage({
                 jwt: auth.token,
-                receiverEmail
+                receiverEmail: profile.email
             });
         }
     }, [readyState]);
@@ -72,7 +73,8 @@ const Chat = () => {
 
     return (
         <div>
-            { receiverEmail }
+            { profile.fullname }
+            <br></br>
             <TextField label="Type a message" variant="outlined" value={message} onChange={(e) => setMessage(e.target.value)} />
             <Button color="inherit" onClick={sendMessage}>{"Send"}</Button>
         </div>
