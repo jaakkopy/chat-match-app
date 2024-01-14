@@ -61,10 +61,22 @@ const Chat = () => {
         }
     }, [readyState]);
 
+
+    const formatDate = (d?: Date | string): string => {
+        console.log(d);
+        if (!d) {
+            d = new Date();
+        } else if (typeof d == "string" || d instanceof String) {
+            d = new Date(d);
+        }
+        return d.toLocaleString();
+    }
+
     useEffect(() => {
         if (lastJsonMessage) {
             // @ts-ignore
-            console.log(`GOT MESSAGE: ${lastJsonMessage.content}`);
+            const msg = lastJsonMessage.content;
+            setMessageHistory(messageHistory.concat({senderEmail: profile.email, content: msg, dateSent: formatDate()}));
         }
     }, [lastJsonMessage]);
 
@@ -74,6 +86,7 @@ const Chat = () => {
                 senderEmail: auth.userEmail,
                 content: message
             });
+            setMessageHistory(messageHistory.concat({senderEmail: auth.userEmail!, content: message, dateSent: formatDate()}));
         }
     }
 
@@ -85,7 +98,7 @@ const Chat = () => {
                 {messageHistory.map(m => {
                     return (
                         <ListItem key={m.dateSent}>
-                            <ListItemText primary={m.content} secondary={m.dateSent}></ListItemText>
+                            <ListItemText primary={m.content} secondary={formatDate(m.dateSent)}></ListItemText>
                         </ListItem>
                     );
                 })}
