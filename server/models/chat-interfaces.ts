@@ -1,27 +1,27 @@
-export interface IChatMessage {
+export interface ChatMessage {
     senderEmail: string;
     content: string;
 }
 
-export interface IOldChatMessage {
+export interface OldChatMessage {
     senderEmail: string;
     content: string;
     dateSent: string;
 }
 
-export interface IFirstChatMessage {
+export interface FirstChatMessage {
     jwt: string;
     receiverEmail: string;
 }
 
-export interface IChatConnection {
+export interface ChatConnection {
     receiveMessageFromWs: (msg: string) => void;
-    receiveMessageFromOther: (msg: IChatMessage) => void;
+    receiveMessageFromOther: (msg: ChatMessage) => void;
     cleanUpAfterConnectionClose: () => void;
 }
 
-export interface IChatObjectStore {
-    register: (email: string, connection: IChatConnection) => void;
+export interface ChatObjectStore {
+    register: (email: string, connection: ChatConnection) => void;
     unregister: (email: string) => void;
-    getRegisteredConnection: (email: string) => IChatConnection | undefined;
+    getRegisteredConnection: (email: string) => ChatConnection | undefined;
 }

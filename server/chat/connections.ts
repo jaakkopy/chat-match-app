@@ -1,10 +1,10 @@
 import { WebSocket, RawData } from 'ws';
-import ChatConnection from './chat-connection';
+import ChatConn from './chat-connection';
 
-const connections: Map<WebSocket, ChatConnection> = new Map();
+const connections: Map<WebSocket, ChatConn> = new Map();
 
 const setupNewConnection = (ws: WebSocket) => {
-    connections.set(ws, new ChatConnection(ws));
+    connections.set(ws, new ChatConn(ws));
 
     ws.on('message', (data: RawData) => {
         connections.get(ws)?.receiveMessageFromWs(data.toString());

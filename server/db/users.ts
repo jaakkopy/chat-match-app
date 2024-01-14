@@ -1,5 +1,6 @@
 import query from './pool';
 import { DBRows, DBUsers } from '../models/db-interface';
+import { UserProfileUpdateFields } from '../models/user';
 
 const insertUser = (
     email: string,
@@ -36,10 +37,18 @@ const getRandomUsersNotLikedOrDisliked = (email: string, amount: number): Promis
     );
 }
 
+const updateUserProfile = (email: string, fields: UserProfileUpdateFields): Promise<DBRows> => {
+    return query(
+        `UPDATE users SET profiletext=$1 WHERE email=$2`,
+        [fields.profiletext, email]
+    );
+}
+
 const dbUsers: DBUsers = {
     insertUser,
     getUserByEmail,
-    getRandomUsersNotLikedOrDisliked
+    getRandomUsersNotLikedOrDisliked,
+    updateUserProfile
 }
 
 export default dbUsers;

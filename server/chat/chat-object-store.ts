@@ -1,10 +1,10 @@
-import { IChatObjectStore, IChatConnection } from '../models/chat-interfaces';
+import { ChatObjectStore, ChatConnection } from '../models/chat-interfaces';
 
 // Key = email, value = the object responsible for the connection
-const chatObjectMap: Map<string, IChatConnection> = new Map();
+const chatObjectMap: Map<string, ChatConnection> = new Map();
 
-const chatObjectStore: IChatObjectStore = {
-    register: (email: string, connection: IChatConnection) => chatObjectMap.set(email, connection),
+const chatObjectStore: ChatObjectStore = {
+    register: (email: string, connection: ChatConnection) => chatObjectMap.set(email, connection),
     unregister: (email: string) => chatObjectMap.delete(email),
     getRegisteredConnection: (email: string) => chatObjectMap.get(email)
 }

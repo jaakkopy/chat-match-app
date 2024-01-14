@@ -11,6 +11,7 @@ import Chat from './components/Chat';
 import { useAuth } from './components/AuthProvider';
 import UserBrowser from './components/Browse';
 import Profile from './components/Profile';
+import { CssBaseline } from '@mui/material';
 
 
 const Protected = ({children}: any) => {
@@ -27,6 +28,7 @@ function App() {
   return (
       <AuthProvider>
           <BrowserRouter>
+            <CssBaseline/>
             <Header>
                 <Routes>
                     <Route index element={ <Protected><Home/></Protected> }/>

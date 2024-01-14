@@ -5,9 +5,9 @@ import userService from '../services/user-service';
 import { ServiceResult } from '../models/service-result';
 import getDB from '../db/db';
 import {
-    IChatMessage,
-    IChatConnection,
-    IFirstChatMessage
+    ChatMessage,
+    ChatConnection,
+    FirstChatMessage
 } from '../models/chat-interfaces';
 import chatObjectStore from './chat-object-store';
 
@@ -17,26 +17,24 @@ import chatObjectStore from './chat-object-store';
  */
 
 
-class ChatConnection implements IChatConnection {
+class ChatConn implements ChatConnection {
     ws: WebSocket;
     // undefined means unauthenticated
     userEmail: string | undefined;
     receiverEmail: string | undefined;
-    observingConnections: IChatConnection[];
 
     constructor(ws: WebSocket) {
         this.ws = ws;
-        this.observingConnections = [];
     }
 
-    parseFirstMessage(msg: string): IFirstChatMessage | null {
+    parseFirstMessage(msg: string): FirstChatMessage | null {
         const asJson = JSON.parse(msg);
         if (!asJson.jwt || !asJson.receiverEmail)
             return null;
         return asJson;
     }
 
-    parseMessage(msg: string): IChatMessage | null {
+    parseMessage(msg: string): ChatMessage | null {
         let asJson = JSON.parse(msg);
         if (!asJson.senderEmail || !asJson?.content)
             return null;
@@ -91,14 +89,14 @@ class ChatConnection implements IChatConnection {
         }
     }
 
-    receiveMessageFromOther(msg: IChatMessage) {
+    receiveMessageFromOther(msg: ChatMessage) {
         console.log(this.userEmail, "received message from other:", msg.senderEmail);
         this.ws.send(JSON.stringify(msg));
     }
 
     receiveMessageFromWs(msg: string) {
         if (this.userEmail) {
-            const message: IChatMessage | null = this.parseMessage(msg);
+            const message: ChatMessage | null = this.parseMessage(msg);
             if (!message) {
                 this.ws.send("HTTP/1.1 400 Invalid message format\r\n\r\n");
             } else {
@@ -119,4 +117,4 @@ class ChatConnection implements IChatConnection {
 }
 
 
-export default ChatConnection;
+export default ChatConn;

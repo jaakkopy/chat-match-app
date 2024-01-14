@@ -1,3 +1,5 @@
+import { UserProfileUpdateFields } from "./user";
+
 export interface DBErrors {
     isUniqueConstraintError: (exception: any) => boolean;
     isNullConstraintError: (exception: any) => boolean;
@@ -18,6 +20,7 @@ export interface DBUsers {
     insertUser: (email: string, hashedPw: string, fullname: string, birthdate: string) => Promise<DBRows>;
     getUserByEmail: (email: string) => Promise<DBRows>;
     getRandomUsersNotLikedOrDisliked: (email: string, amount: number) => Promise<DBRows>;
+    updateUserProfile: (email: string, fields: UserProfileUpdateFields) => Promise<DBRows>;
 }
 
 export interface DBMessages {

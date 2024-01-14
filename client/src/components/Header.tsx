@@ -71,7 +71,6 @@ const Header = ({children}: any) => {
 
     return (
         <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
         <AppBar component="nav">
             <Toolbar>
             <IconButton

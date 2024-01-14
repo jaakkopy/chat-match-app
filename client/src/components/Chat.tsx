@@ -64,7 +64,6 @@ const Chat = () => {
 
 
     const formatDate = (d?: Date | string): string => {
-        console.log(d);
         if (!d) {
             d = new Date();
         } else if (typeof d == "string" || d instanceof String) {
@@ -93,7 +92,7 @@ const Chat = () => {
 
     // The following code is mostly copied from here: https://frontendshape.com/post/create-a-chat-ui-in-react-with-mui-5 
     return (
-        <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ height: "90vh", display: "flex", flexDirection: "column" }}>
             <Box display={"flex"} flexDirection={"row"}>
                 <Avatar>{profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
                 <Typography variant={"h4"}>{profile.fullname}</Typography>
