@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
 import { OldChatMessage } from "../models/Chat";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 
 
 const Chat = () => {
@@ -25,9 +26,9 @@ const Chat = () => {
     const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
         // TODO: Add the proxy
         "ws://localhost:8000", {
-            share: false,
-            shouldReconnect: () => true,
-        },
+        share: false,
+        shouldReconnect: () => true,
+    },
     );
 
     useEffect(() => {
@@ -35,11 +36,11 @@ const Chat = () => {
         const f = async () => {
             if (mounted && auth !== null) {
                 const res = await fetch(
-                    `/api/chat/history/${profile.email}/${batch}`,{
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`
-                        }
+                    `/api/chat/history/${profile.email}/${batch}`, {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`
                     }
+                }
                 );
                 if (res.status == 200) {
                     const { history } = await res.json();
@@ -48,7 +49,7 @@ const Chat = () => {
             }
         }
         f();
-        return () => {mounted = false;}
+        return () => { mounted = false; }
     }, []);
 
     useEffect(() => {
@@ -76,7 +77,7 @@ const Chat = () => {
         if (lastJsonMessage) {
             // @ts-ignore
             const msg = lastJsonMessage.content;
-            setMessageHistory(messageHistory.concat({senderEmail: profile.email, content: msg, dateSent: formatDate()}));
+            setMessageHistory(messageHistory.concat({ senderEmail: profile.email, content: msg, dateSent: formatDate() }));
         }
     }, [lastJsonMessage]);
 
@@ -86,32 +87,65 @@ const Chat = () => {
                 senderEmail: auth.userEmail,
                 content: message
             });
-            setMessageHistory(messageHistory.concat({senderEmail: auth.userEmail!, content: message, dateSent: formatDate()}));
+            setMessageHistory(messageHistory.concat({ senderEmail: auth.userEmail!, content: message, dateSent: formatDate() }));
         }
     }
 
+    // The following code is mostly copied from here: https://frontendshape.com/post/create-a-chat-ui-in-react-with-mui-5 
     return (
-        <div>
-            { profile.fullname }
-            { /* Message history list */}
-            <List>
+        <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+            <Box display={"flex"} flexDirection={"row"}>
+                <Avatar>{profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
+                <Typography variant={"h4"}>{profile.fullname}</Typography>
+            </Box>
+            <Divider/>
+            <Box sx={{ flexGrow: 1, overflow: "auto", p: 2 }}>
                 {messageHistory.map(m => {
                     return (
-                        <ListItem key={m.dateSent}>
-                            <ListItemText primary={m.content} secondary={formatDate(m.dateSent)}></ListItemText>
-                        </ListItem>
+                        <Box key={m.dateSent}
+                            sx={{
+                                display: "flex",
+                                justifyContent: m.senderEmail == profile.email ? "flex-start" : "flex-end",
+                                mb: 2,
+                            }}
+                        >
+                            <Paper
+                                variant="outlined"
+                                sx={{
+                                    p: 1,
+                                }}
+                            >
+                                <ListItemText primary={m.content} secondary={formatDate(m.dateSent)}></ListItemText>
+                            </Paper>
+                        </Box>
                     );
                 })}
-            </List>
-
-            <Divider />
-
-            { /* New message input */} 
-            <Grid>
-                <TextField label="Type a message" variant="outlined" value={message} onChange={(e) => setMessage(e.target.value)} />
-                <Button color="inherit" onClick={sendMessage}>{"Send"}</Button>
-            </Grid>
-        </div>
+            </Box>
+            <Divider/>
+            <Box sx={{ p: 2, backgroundColor: "background.default" }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                        <TextField
+                            fullWidth
+                            placeholder="Type a message"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button
+                            fullWidth
+                            size="large"
+                            color="primary"
+                            variant="contained"
+                            onClick={sendMessage}
+                        >
+                            Send
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Box>
     );
 }
 

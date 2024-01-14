@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { useState } from 'react';
+import { Container } from '@mui/material';
 
 
 const HeaderDrawerLinkItem = ({link, text}: {link: string, text: string}) => {
@@ -128,10 +129,10 @@ const Header = ({children}: any) => {
             {drawer}
             </Drawer>
         </nav>
-        <Box component="main" sx={{ p: 3 }}>
+        <Container component="main" sx={{ p: 3 }}>
             <Toolbar />
             {children}
-        </Box>
+        </Container>
       </Box>
   );
 }

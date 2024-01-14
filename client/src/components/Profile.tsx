@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Container, Box, Avatar, Stack, Typography } from "@mui/material";
+
 import UserProfile from "../models/User";
 import { useAuth } from "./AuthProvider";
 
@@ -26,13 +28,14 @@ const Profile = () => {
     }, []);
 
     return (
-        <div>
-            Name: {profile?.fullname}
-            <br></br>
-            Born: {profile?.birthdate}
-            <br></br>
-            About me: {profile?.profiletext ?? "No profile text yet"}
-        </div>
+        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+            <Stack direction={"column"}>
+                <Avatar>A</Avatar>
+                <Typography>{profile?.fullname}</Typography>
+                <Typography>{profile?.birthdate}</Typography>
+                <Typography>{profile?.profiletext ?? "No profile text yet"}</Typography>
+            </Stack>
+        </Box>
     );
 }
 
