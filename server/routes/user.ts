@@ -29,7 +29,6 @@ userRouter.put("/profile",
     [body("profileText").exists()],
     async (req: Request, res: Response) => {
 
-    console.log(req.body);
     const valRes = validationResult(req);
     if (!valRes.isEmpty())
         return res.status(400).json({errors: valRes.array()});

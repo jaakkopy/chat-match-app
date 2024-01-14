@@ -29,5 +29,4 @@ chatRouter.get("/history/:user/:batch",
     }
 });
 
-
 export default chatRouter;

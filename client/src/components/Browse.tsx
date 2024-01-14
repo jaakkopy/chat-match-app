@@ -70,6 +70,7 @@ const UserBrowser = () => {
     postToLikeOrDislike("/api/likes/dislike");
   }
 
+  // Handle swipe event if on mobile
   const handlers = useSwipeable({
     onSwiped: async (eventData) => {
       if (eventData.dir == 'Right') {

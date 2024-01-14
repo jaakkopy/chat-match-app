@@ -49,21 +49,27 @@ const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB):
 const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
     try {
         const matches = await db.likes.getMatchesOfUser(email);
-        let matchEmails: User[] = matches.map(m => {
+        const matchEmails: {profile: User, latestMessage: string}[] = matches.map(m => {
             if (m.email1 == email) {
                 // If the first email corresponds to the requester, return the second one's info
                 return {
-                    email: m.email2,
-                    profiletext: m.pt2,
-                    fullname: m.fn2,
-                    birthdate: m.bd2
+                    profile: {
+                        email: m.email2,
+                        profiletext: m.pt2,
+                        fullname: m.fn2,
+                        birthdate: m.bd2
+                    },
+                    latestMessage: m.content
                 }
             } else {
                 return {
-                    email: m.email1,
-                    profiletext: m.pt1,
-                    fullname: m.fn1,
-                    birthdate: m.bd1
+                    profile: {
+                        email: m.email1,
+                        profiletext: m.pt1,
+                        fullname: m.fn1,
+                        birthdate: m.bd1
+                    },
+                    latestMessage: m.content
                 }
             }
         });

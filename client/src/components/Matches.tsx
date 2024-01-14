@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,11 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
+import { Avatar, Box } from '@mui/material';
 
 const Matches = () => {
     const auth = useAuth();
     const navigate = useNavigate();
-    const [matchedUsers, setMatchedUsers] = useState<UserProfile[]>([]);
+    const [matchedUsers, setMatchedUsers] = useState<{profile: UserProfile, latestMessage: string}[]>([]);
     const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
@@ -51,7 +51,7 @@ const Matches = () => {
 
     const onUserclicked = (email: string) => {
         // navigate to the chat page for the selected user
-        navigate("/chat",  { state: { profile: matchedUsers.find(u => u.email === email) } });
+        navigate("/chat",  { state: { profile: matchedUsers.find(u => u.profile.email === email)?.profile } });
     }
 
     return (
@@ -60,19 +60,20 @@ const Matches = () => {
                 {
                     matchedUsers?.map(m => {
                         return (
-                            <Fragment key={m.email}>
-                                <ListItem onClick={() => onUserclicked(m.email)} key={m.email}>
+                            <Box display={"flex"} flexDirection={"row"} key={m.profile.email}>
+                                <Avatar>{m.profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
+                                <ListItem onClick={() => onUserclicked(m.profile.email)} key={m.profile.email}>
                                     <ListItemText
-                                      primary={m.fullname}
+                                      primary={m.profile.fullname}
                                       secondary={
                                         <>
-                                          {" — TODO: add the latest message of the chat here"}
+                                          {m.latestMessage}
                                         </>
                                       }
                                     />
                                 </ListItem>
                                 <Divider variant="inset" component="li" />
-                            </Fragment>
+                            </Box>
                         )
                     })
                 }
