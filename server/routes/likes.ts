@@ -21,6 +21,9 @@ likesRouter.post("/like", [
         // @ts-ignore : email exists for sure due to passport if we get here
         const likerEmail = req.user.email;
         const result: ServiceResult = await likesService.addLike(likerEmail, data.email, getDB());
+        if (result.ok) {
+            return res.status(result.status).json({mutualLikes: result.data});
+        }
         res.status(result.status).send(result.msg);
     } catch (e) {
         console.error(e);

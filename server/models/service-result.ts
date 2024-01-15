@@ -5,11 +5,12 @@ export interface ServiceResult {
     data?: any;
 }
 
-export const defaultServiceResult = (): ServiceResult => {
+export const defaultServiceResult = (data?: any): ServiceResult => {
     return {
         ok: true,
         status: 200,
-        msg: 'ok'
+        msg: 'ok',
+        data: data
     }
 }
 

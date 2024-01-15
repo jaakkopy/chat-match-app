@@ -16,6 +16,9 @@ const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<
      */ 
     try {
         await db.likes.insertLike(likerEmail, likedEmail);
+        // If both users like each other, return an indication of this to the client
+        const mutualLikes = await db.likes.verifyMutualLikes(likerEmail, likedEmail);
+        return defaultServiceResult(mutualLikes);
     } catch (e) {
         if (db.errors.isUniqueConstraintError(e)) {
             return defaultInvalidRequestResult("User already liked");
@@ -26,7 +29,6 @@ const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<
         console.error(e);
         return defaultInternalErrorResult();
     }
-    return defaultServiceResult();
 }
 
 const addDislike = async (dislikerEmail: string, dislikedEmail: string, db: DB): Promise<ServiceResult> => {

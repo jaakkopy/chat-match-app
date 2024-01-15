@@ -8,11 +8,30 @@ import { useSwipeable } from "react-swipeable";
 
 import { useAuth } from "./AuthProvider";
 import UserProfile from '../models/User';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
+
+
+const modalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 
 const UserBrowser = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserProfile[]>([]);
+  const [index, setIndex] = useState<number>(0);
+  const [modalOpen, setModalOpen] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchUsers = async () => {
@@ -30,6 +49,7 @@ const UserBrowser = () => {
           setHasMore(false);
         }
         setUsers(js.users);
+        setIndex(0);
       }
   }
 
@@ -42,10 +62,10 @@ const UserBrowser = () => {
   }, []);
 
   const postToLikeOrDislike = async (url: string) => {
-    if (auth === null || users.length == 0)
-      return;
+    if (auth === null || users.length == 0 || index >= users.length)
+      return null;
     // TODO: error handling
-    const userEmail = users[0].email;
+    const userEmail = users[index].email;
     const res = await fetch(url, {
       method: "POST",
       body: JSON.stringify({
@@ -56,18 +76,41 @@ const UserBrowser = () => {
         Authorization: `Bearer ${auth.token}`
       }
     });
-    setUsers(users.slice(1));
-    if (users.length == 0 && hasMore) {
+    return res; 
+  }
+
+  
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  }
+  
+  const handleModalClose = () => {
+    setModalOpen(false);
+  }
+
+  const indexToNextUser = () => {
+    setIndex(index + 1);
+    if (index >= users.length && hasMore) {
       fetchUsers();
     }
   }
 
-  const handleLike = () =>  {
-    postToLikeOrDislike("/api/likes/like");
+  const handleLike = async () =>  {
+    const res = await postToLikeOrDislike("/api/likes/like");
+    const { mutualLikes } = await res?.json();
+    // Both users have liked each other. Ask if the user wants to start chatting
+    if (mutualLikes) {
+      // Open the modal. Don't call indexToNextUser yet because we want to wait
+      // for the user to press "yes" or "no" in the modal
+      handleModalOpen();
+    } else {
+      indexToNextUser();
+    }
   }
   
-  const handleDislike = () =>  {
+  const handleDislike = async () =>  {
     postToLikeOrDislike("/api/likes/dislike");
+    indexToNextUser();
   }
 
   // Handle swipe event if on mobile
@@ -81,7 +124,7 @@ const UserBrowser = () => {
     },
   });
 
-  if (users.length == 0) {
+  if (index >= users.length || users.length == 0) {
     return (
       <div>
         <p>Sorry. There are no more users to browse</p>
@@ -94,13 +137,13 @@ const UserBrowser = () => {
       <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography variant="h5" component="div">
-          {users[0].fullname}
+          {users[index].fullname}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          Born {users[0].birthdate}
+          Born {users[index].birthdate}
         </Typography>
         <Typography variant="body2">
-          {users[0].profiletext ?? "The user has not given a profile text"} 
+          {users[index].profiletext ?? "The user has not given a profile text"} 
         </Typography>
       </CardContent>
       <CardActions>
@@ -108,6 +151,27 @@ const UserBrowser = () => {
         <Button size="small" onClick={handleLike}>Like</Button>
       </CardActions>
     </Card>
+    
+    <Modal
+      open={modalOpen}
+      onClose={handleModalClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={modalStyle}>
+        <Typography variant="h6" component="h2">
+          Match! Start chatting right away?
+        </Typography>
+        <Button onClick={() => {
+          handleModalClose();
+          navigate("/chat",  { state: { profile: users[index] } });
+        }}>Yes</Button>
+        <Button onClick={() => {
+          handleModalClose();
+          indexToNextUser();
+        }}>No</Button>
+      </Box>
+    </Modal>
     </div>
   );
 }
