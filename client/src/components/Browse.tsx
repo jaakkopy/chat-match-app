@@ -88,7 +88,7 @@ const UserBrowser = () => {
     setModalOpen(false);
   }
 
-  const indexToNextUser = () => {
+  const incrementIndex = () => {
     setIndex(index + 1);
     if (index >= users.length && hasMore) {
       fetchUsers();
@@ -100,17 +100,17 @@ const UserBrowser = () => {
     const { mutualLikes } = await res?.json();
     // Both users have liked each other. Ask if the user wants to start chatting
     if (mutualLikes) {
-      // Open the modal. Don't call indexToNextUser yet because we want to wait
+      // Open the modal. Don't call incrementIndex yet because we want to wait
       // for the user to press "yes" or "no" in the modal
       handleModalOpen();
     } else {
-      indexToNextUser();
+      incrementIndex();
     }
   }
   
   const handleDislike = async () =>  {
     postToLikeOrDislike("/api/likes/dislike");
-    indexToNextUser();
+    incrementIndex();
   }
 
   // Handle swipe event if on mobile
@@ -168,7 +168,7 @@ const UserBrowser = () => {
         }}>Yes</Button>
         <Button onClick={() => {
           handleModalClose();
-          indexToNextUser();
+          incrementIndex();
         }}>No</Button>
       </Box>
     </Modal>

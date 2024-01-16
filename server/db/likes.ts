@@ -74,19 +74,19 @@ const getMatchesOfUser = async (email: string): Promise<DBRows> => {
             u1.id = user1
         JOIN users u2 ON
             u2.id = user2
-        JOIN messages m ON
+        LEFT JOIN messages m ON
             (m.sender = user1 AND m.receiver = user2)
             OR
             (m.sender = user2 AND m.receiver = user1)
         WHERE
             (u1.email = $1 OR u2.email = $1)
             AND
-            m.date_sent = (SELECT MAX(date_sent) FROM (
+            (m.content IS NULL OR m.date_sent = (SELECT MAX(date_sent) FROM (
                 SELECT MAX(date_sent) AS date_sent
                 FROM messages
                 GROUP BY sender, receiver
                 HAVING (sender = user1 AND receiver = user2) OR (sender = user2 AND receiver = user1)
-            ))
+            )))
             ;`,
         [email]
     );
