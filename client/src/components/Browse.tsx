@@ -91,6 +91,7 @@ const UserBrowser = () => {
   const incrementIndex = () => {
     const newIndex = index + 1;
     setIndex(newIndex);
+    // The current set has been browsed to the end. If there is more to fetch, fetch it
     if (newIndex >= users.length && hasMore) {
       fetchUsers();
     }

@@ -7,12 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Pagination } from '@mui/material';
 
 const Matches = () => {
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
     const auth = useAuth();
     const navigate = useNavigate();
-    const [matchedUsers, setMatchedUsers] = useState<{profile: UserProfile, latestMessage: string}[]>([]);
+    const [pagesOfUsers, setPagesOfUsers] = useState<{profile: UserProfile, latestMessage: string}[][]>([[]]);
     const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
@@ -32,7 +34,27 @@ const Matches = () => {
                 } else {
                     setError(null);
                     const {matches} = await res.json();
-                    setMatchedUsers(matches);
+                    // Divide the entries into pages of 10 per page.
+                    // If the amount is not divisible by 10, leftovers will be inserted to the last page
+                    let userPages = [];
+                    let amountPages = Math.floor(matches.length / 10);
+                    for (let row = 0; row < amountPages; ++row) {
+                        let userPage = [];
+                        for (let col = 0; col < 10; ++col) {
+                            userPage.push(matches[10 * row + col]);
+                        }
+                        userPages.push(userPage);
+                    }
+                    let lastUserPage = [];
+                    for (let col = 0; col < matches.length % 10; ++col) {
+                        lastUserPage.push(amountPages * 10 + col);
+                    }
+                    if (lastUserPage.length != 0) {
+                        amountPages += 1;
+                        userPages.push(lastUserPage);
+                    }
+                    setPagesOfUsers(userPages);
+                    setLastPage(amountPages);
                 }
             }
         }
@@ -51,14 +73,19 @@ const Matches = () => {
 
     const onUserclicked = (email: string) => {
         // navigate to the chat page for the selected user
-        navigate("/chat",  { state: { profile: matchedUsers.find(u => u.profile.email === email)?.profile } });
+        navigate("/chat",  { state: { profile: pagesOfUsers[page - 1].find(u => u.profile.email === email)?.profile } });
     }
+
+    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
 
     return (
         <div>
+            {lastPage != 1 ? <Pagination count={lastPage} page={page} onChange={handleChange} siblingCount={0}/> : null}
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {
-                    matchedUsers?.map(m => {
+                    pagesOfUsers[page - 1].map(m => {
                         return (
                             <Box display={"flex"} flexDirection={"row"} key={m.profile.email}>
                                 <Avatar>{m.profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
