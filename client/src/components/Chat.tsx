@@ -2,8 +2,6 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -21,7 +19,6 @@ const Chat = () => {
     const { state } = useLocation();
     const profile: UserProfile = state.profile; // Read values passed on state
     const [messageHistory, setMessageHistory] = useState<OldChatMessage[]>([]);
-    const [batch, setBatch] = useState<number>(0);
     const [message, setMessage] = useState<string>('');
     const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
         // TODO: Add the proxy
@@ -36,7 +33,7 @@ const Chat = () => {
         const f = async () => {
             if (mounted && auth !== null) {
                 const res = await fetch(
-                    `/api/chat/history/${profile.email}/${batch}`, {
+                    `/api/chat/history/${profile.email}`, {
                     headers: {
                         Authorization: `Bearer ${auth.token}`
                     }
@@ -97,7 +94,7 @@ const Chat = () => {
                 <Avatar>{profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
                 <Typography variant={"h4"}>{profile.fullname}</Typography>
             </Box>
-            <Divider/>
+            <Divider />
             <Box sx={{ flexGrow: 1, overflow: "auto", p: 2 }}>
                 {messageHistory.map(m => {
                     return (
@@ -120,7 +117,7 @@ const Chat = () => {
                     );
                 })}
             </Box>
-            <Divider/>
+            <Divider />
             <Box sx={{ p: 2, backgroundColor: "background.default" }}>
                 <Grid container spacing={2}>
                     <Grid item xs={10}>

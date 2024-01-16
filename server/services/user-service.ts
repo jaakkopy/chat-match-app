@@ -26,7 +26,7 @@ const getByEmail = async (email: string | undefined, db: DB): Promise<ServiceRes
 
 const getUsersForBrowsing = async (email: string, db: DB): Promise<ServiceResult> => {
     try {
-        const amount = 20; // get 20 users
+        const amount = 20; // Get just 20 users per request to prevent possibly too large amounts from being transmitted
         let res = defaultServiceResult();
         const users: User[] = (await db.users.getRandomUsersNotLikedOrDisliked(email, amount)).map(u => {
             return {

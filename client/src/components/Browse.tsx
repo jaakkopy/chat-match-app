@@ -89,8 +89,9 @@ const UserBrowser = () => {
   }
 
   const incrementIndex = () => {
-    setIndex(index + 1);
-    if (index >= users.length && hasMore) {
+    const newIndex = index + 1;
+    setIndex(newIndex);
+    if (newIndex >= users.length && hasMore) {
       fetchUsers();
     }
   }

@@ -1,6 +1,5 @@
 import { 
     ServiceResult,
-    defaultInvalidRequestResult,
     defaultInternalErrorResult,
     defaultServiceResult
 } from '../models/service-result';
@@ -11,19 +10,16 @@ import { OldChatMessage } from '../models/chat-interfaces';
 const getChatHistoryBatch = async (
     requesterEmail: string,
     targetUserEmail: string,
-    batch: number,
     db: DB): Promise<ServiceResult> => {
     try {
-        const chatHistory: OldChatMessage[] = (await db.messages.getMessages(requesterEmail, targetUserEmail, batch)).map(m => {
+        const chatHistory: OldChatMessage[] = (await db.messages.getMessages(requesterEmail, targetUserEmail)).map(m => {
             return {
                 senderEmail: m.sender_email,
                 content: m.content,
                 dateSent: m.date_sent
             }
         });
-        let res = defaultServiceResult();
-        res.data = chatHistory;
-        return res;
+        return defaultServiceResult(chatHistory);
     } catch (e) {
         console.error(e);
         return defaultInternalErrorResult();

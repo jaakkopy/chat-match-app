@@ -15,7 +15,7 @@ const insertMessage = async (senderEmail: string, receiverEmail: string, content
 }
 
 
-const getMessages = async (requesterEmail: string, targetUserEmail: string, batch: number): Promise<DBRows> => {
+const getMessages = async (requesterEmail: string, targetUserEmail: string): Promise<DBRows> => {
     return query(
         `WITH us(user1, user2) AS (VALUES(
             (SELECT id FROM users WHERE email=$1),
@@ -31,10 +31,8 @@ const getMessages = async (requesterEmail: string, targetUserEmail: string, batc
                  m.sender = us.user2 AND m.receiver = us.user1
              ORDER BY
                  "date_sent"
-             OFFSET $3
-             LIMIT 50;
         `,
-        [requesterEmail, targetUserEmail, 50 * batch]
+        [requesterEmail, targetUserEmail]
     );
 }
 
