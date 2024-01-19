@@ -1,6 +1,11 @@
 import {User, UserProfileUpdateFields} from '../models/user';
 import { DB } from '../models/db-interface';
-import { ServiceResult, defaultInternalErrorResult, defaultInvalidRequestResult, defaultServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
+import {
+    defaultInternalErrorResult,
+    defaultInvalidRequestResult,
+    defaultServiceResult
+} from './default-service-results';
 
 const getByEmail = async (email: string | undefined, db: DB): Promise<ServiceResult> => {
     if (!email)

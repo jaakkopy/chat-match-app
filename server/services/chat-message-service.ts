@@ -1,8 +1,8 @@
-import { 
-    ServiceResult,
+import ServiceResult from '../models/service-result';
+import {
     defaultInternalErrorResult,
     defaultServiceResult
-} from '../models/service-result';
+} from './default-service-results';
 import { DB } from '../models/db-interface';
 import { OldChatMessage } from '../models/chat-interfaces';
 

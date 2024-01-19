@@ -1,9 +1,9 @@
-import { 
-    ServiceResult,
+import ServiceResult from '../models/service-result';
+import {
     defaultInvalidRequestResult,
     defaultInternalErrorResult,
     defaultServiceResult
-} from '../models/service-result';
+} from './default-service-results';
 import { DB } from '../models/db-interface';
 import { User } from '../models/user';
 

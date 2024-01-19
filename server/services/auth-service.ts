@@ -1,11 +1,11 @@
 import { Credentials, RegistrationFields } from '../models/auth-interfaces';
-import { 
-    ServiceResult, 
+import ServiceResult from '../models/service-result';
+import {
     defaultServiceResult,
     defaultInternalErrorResult,
     defaultInvalidRequestResult,
     defaultUnauthorizedRequestResult
-} from '../models/service-result';
+} from './default-service-results';
 import { hash, compare } from 'bcrypt';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import { DB, DBRows } from '../models/db-interface';

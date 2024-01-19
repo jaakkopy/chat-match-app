@@ -98,16 +98,21 @@ const UserBrowser = () => {
   }
 
   const handleLike = async () =>  {
-    const res = await postToLikeOrDislike("/api/likes/like");
-    const { mutualLikes } = await res?.json();
-    // Both users have liked each other. Ask if the user wants to start chatting
-    if (mutualLikes) {
-      // Open the modal. Don't call incrementIndex yet because we want to wait
-      // for the user to press "yes" or "no" in the modal
-      handleModalOpen();
-    } else {
-      incrementIndex();
+    try {
+      const res = await postToLikeOrDislike("/api/likes/like");
+      const { mutualLikes } = await res?.json();
+      // Both users have liked each other. Ask if the user wants to start chatting
+      if (mutualLikes) {
+        // Open the modal. Don't call incrementIndex yet because we want to wait
+        // for the user to press "yes" or "no" in the modal
+        handleModalOpen();
+      } else {
+        incrementIndex();
+      }
+    } catch (e) {
+      console.error(e);
     }
+    
   }
   
   const handleDislike = async () =>  {
@@ -156,7 +161,6 @@ const UserBrowser = () => {
     
     <Modal
       open={modalOpen}
-      onClose={handleModalClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >

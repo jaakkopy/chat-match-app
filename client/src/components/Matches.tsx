@@ -85,7 +85,7 @@ const Matches = () => {
             {lastPage != 1 ? <Pagination count={lastPage} page={page} onChange={handleChange} siblingCount={0}/> : null}
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {
-                    pagesOfUsers[page - 1].map(m => {
+                    pagesOfUsers.length > 0 ? pagesOfUsers[page - 1].map(m => {
                         return (
                             <Box display={"flex"} flexDirection={"row"} key={m.profile.email}>
                                 <Avatar>{m.profile.fullname.split(" ").map(part => part[0]).join("")}</Avatar>
@@ -102,7 +102,7 @@ const Matches = () => {
                                 <Divider variant="inset" component="li" />
                             </Box>
                         )
-                    })
+                    }) : null
                 }
             </List>
         </div>
