@@ -75,9 +75,7 @@ const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
                 }
             }
         });
-        let res = defaultServiceResult();
-        res.data = matchEmails;
-        return res;
+        return defaultServiceResult(matchEmails);
     } catch (e) {
         console.error(e);
         return defaultInternalErrorResult();

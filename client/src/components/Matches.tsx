@@ -47,7 +47,7 @@ const Matches = () => {
                     }
                     let lastUserPage = [];
                     for (let col = 0; col < matches.length % 10; ++col) {
-                        lastUserPage.push(amountPages * 10 + col);
+                        lastUserPage.push(matches[amountPages * 10 + col]);
                     }
                     if (lastUserPage.length != 0) {
                         amountPages += 1;
