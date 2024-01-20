@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
+import { Button, FormControl, Input, InputLabel, TextField } from '@mui/material';
 
 
 const LoginPage = () => {
@@ -29,18 +30,13 @@ const LoginPage = () => {
     }
 
     return (
-        <div>
-            <form>
-                <label>Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+        <form>
+            <TextField fullWidth required label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField fullWidth required label="Password" id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                <label>Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-
-                <input type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}/>
-            </form>
+            <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}>Login</Button>
             {error !== null ? <p>Error: {error}</p> : <></>}
-        </div>
+        </form>
     );
 }
 

@@ -2,7 +2,7 @@ import { WebSocket } from 'ws';
 
 import authService from '../services/auth-service';
 import userService from '../services/user-service';
-import { ServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
 import getDB from '../db/db';
 import {
     ChatMessage,

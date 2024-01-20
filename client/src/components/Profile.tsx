@@ -65,6 +65,7 @@ const Profile = () => {
                 subheader={profile?.birthdate}
             />
             <CardContent>
+                <p>My profile text</p>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<EditIcon />}

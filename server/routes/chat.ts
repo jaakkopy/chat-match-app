@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import passport from 'passport';
-import { ServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
 import getDB from '../db/db';
 import chatService from '../services/chat-message-service';
 

@@ -51,22 +51,21 @@ const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
             return invalidCredsResult;
         }
         pwFromDb = rows[0].passwordhash;
+        const isMatch = await compare(creds.password, pwFromDb);
+        // Wrong password
+        if (!isMatch) {
+            return invalidCredsResult;
+        }
+        // Create a JWT
+        const jwtPayload = {
+            email: creds.email
+        }
+        const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '24h' });
+        return defaultServiceResult(token);
     } catch (e) {
+        console.error(e);
         return defaultInternalErrorResult();
     }
-    const isMatch = await compare(creds.password, pwFromDb);
-    // Wrong password
-    if (!isMatch) {
-        return invalidCredsResult;
-    }
-    // Create a JWT
-    const jwtPayload = {
-        email: creds.email
-    }
-    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!, { expiresIn: '24h' });
-    let result: ServiceResult = defaultServiceResult();
-    result.data = token;
-    return result;
 }
 
 

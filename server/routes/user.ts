@@ -5,7 +5,7 @@ import { validationResult, body, matchedData } from 'express-validator';
 import { UserProfileUpdateFields } from '../models/user';
 
 import getDB from '../db/db';
-import { ServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
 
 const userRouter = Router();
 

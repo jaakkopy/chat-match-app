@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { validationResult, body, matchedData } from 'express-validator';
 import passport from 'passport';
 
-import { ServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
 import likesService from '../services/likes-service';
 import getDB from '../db/db';
 

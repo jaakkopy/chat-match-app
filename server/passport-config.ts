@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
 import passport from 'passport';
 import userService from './services/user-service';
 import getDB from './db/db';
-import { ServiceResult } from './models/service-result';
+import ServiceResult from './models/service-result';
 
 export const initPassport = () => {
     const opts: StrategyOptions = {

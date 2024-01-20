@@ -26,6 +26,23 @@ const modalStyle = {
 };
 
 
+const MatchModal = ({ modalOpen, onModalYesClick, onModalNoClick }: { modalOpen: boolean, onModalYesClick: () => void, onModalNoClick: () => void, }) => {
+  return <Modal
+    open={modalOpen}
+    aria-labelledby="modal-modal-title"
+    aria-describedby="modal-modal-description"
+  >
+    <Box sx={modalStyle}>
+      <Typography variant="h6" component="h2">
+        Match! Start chatting right away?
+      </Typography>
+      <Button onClick={onModalYesClick}>Yes</Button>
+      <Button onClick={onModalNoClick}>No</Button>
+    </Box>
+  </Modal>
+}
+
+
 const UserBrowser = () => {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -38,19 +55,19 @@ const UserBrowser = () => {
     if (auth === null)
       return;
     const res = await fetch("/api/user/browse", {
-        headers: {
-          Authorization: `Bearer ${auth.token}`
-        }
-      });
-      // TODO: handle possible error
-      if (res.status == 200) {
-        const js = await res.json();
-        if (js.users.length == 0) {
-          setHasMore(false);
-        }
-        setUsers(js.users);
-        setIndex(0);
+      headers: {
+        Authorization: `Bearer ${auth.token}`
       }
+    });
+    // TODO: handle possible error
+    if (res.status == 200) {
+      const js = await res.json();
+      if (js.users.length == 0) {
+        setHasMore(false);
+      }
+      setUsers(js.users);
+      setIndex(0);
+    }
   }
 
   useEffect(() => {
@@ -58,7 +75,7 @@ const UserBrowser = () => {
     if (mounted) {
       fetchUsers();
     }
-    return () => {mounted = false;}
+    return () => { mounted = false; }
   }, []);
 
   const postToLikeOrDislike = async (url: string) => {
@@ -76,14 +93,14 @@ const UserBrowser = () => {
         Authorization: `Bearer ${auth.token}`
       }
     });
-    return res; 
+    return res;
   }
 
-  
+
   const handleModalOpen = () => {
     setModalOpen(true);
   }
-  
+
   const handleModalClose = () => {
     setModalOpen(false);
   }
@@ -97,7 +114,7 @@ const UserBrowser = () => {
     }
   }
 
-  const handleLike = async () =>  {
+  const handleLike = async () => {
     try {
       const res = await postToLikeOrDislike("/api/likes/like");
       const { mutualLikes } = await res?.json();
@@ -112,10 +129,10 @@ const UserBrowser = () => {
     } catch (e) {
       console.error(e);
     }
-    
+
   }
-  
-  const handleDislike = async () =>  {
+
+  const handleDislike = async () => {
     postToLikeOrDislike("/api/likes/dislike");
     incrementIndex();
   }
@@ -139,48 +156,39 @@ const UserBrowser = () => {
     );
   }
 
+  const onModalYesClick = () => {
+    handleModalClose();
+    navigate("/chat", { state: { profile: users[index] } });
+  }
+
+  const onModalNoClick = () => {
+    handleModalClose();
+    incrementIndex();
+  }
+
   return (
     <div {...handlers} style={{ touchAction: 'pan-y' }}>
       <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {users[index].fullname}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          Born {users[index].birthdate}
-        </Typography>
-        <Typography variant="body2">
-          {users[index].profiletext ?? "The user has not given a profile text"} 
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" onClick={handleDislike}>Dislike</Button>
-        <Button size="small" onClick={handleLike}>Like</Button>
-      </CardActions>
-    </Card>
-    
-    <Modal
-      open={modalOpen}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={modalStyle}>
-        <Typography variant="h6" component="h2">
-          Match! Start chatting right away?
-        </Typography>
-        <Button onClick={() => {
-          handleModalClose();
-          navigate("/chat",  { state: { profile: users[index] } });
-        }}>Yes</Button>
-        <Button onClick={() => {
-          handleModalClose();
-          incrementIndex();
-        }}>No</Button>
-      </Box>
-    </Modal>
+        <CardContent>
+          <Typography variant="h5" component="div">
+            {users[index].fullname}
+          </Typography>
+          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            Born {users[index].birthdate}
+          </Typography>
+          <Typography variant="body2">
+            {users[index].profiletext ?? "The user has not given a profile text"}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={handleDislike}>Dislike</Button>
+          <Button size="small" onClick={handleLike}>Like</Button>
+        </CardActions>
+      </Card>
+      <MatchModal modalOpen={modalOpen} onModalNoClick={onModalNoClick} onModalYesClick={onModalYesClick}/>
     </div>
   );
 }
 
 
-export  default UserBrowser;
+export default UserBrowser;

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { validationResult, body, matchedData } from 'express-validator';
 import authService from '../services/auth-service';
-import { ServiceResult } from '../models/service-result';
+import ServiceResult from '../models/service-result';
 import { Credentials, RegistrationFields } from '../models/auth-interfaces';
 import getDB from '../db/db';
 
