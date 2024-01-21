@@ -35,7 +35,7 @@ const LoginPage = () => {
             <TextField fullWidth required label="Password" id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
             <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}>Login</Button>
-            {error !== null ? <Alert severity="warning">Error: {error}</Alert> : <></>}
+            {error !== null ? <Alert severity="warning">Error: {error}</Alert> : null}
         </div>
     );
 }

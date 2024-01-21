@@ -4,11 +4,19 @@ import React, { useState } from 'react';
 // https://www.robinwieruch.de/react-router-authentication/
 // Some modifications were made.
 
+export interface RegistrationError {
+    type: string;
+    value: string;
+    msg: string;
+    path: string;
+    location: string;
+}
+
 export interface AuthContextValues {
     token: string | null;
     userEmail: string | null;
     onLogin: (email: string, password: string) => Promise<string | null>;
-    onRegister: (email: string, password: string, fullname: string, birthdate: string) => Promise<string | null>;
+    onRegister: (email: string, password: string, fullname: string, birthdate: string) => Promise<RegistrationError[] | null>;
     onLogout: () => void;
     isLoggedIn: () => boolean;
 }
@@ -45,7 +53,7 @@ export const AuthProvider = ({ children }: any) => {
         email: string,
         password: string,
         fullname: string,
-        birthdate: string) => {
+        birthdate: string): Promise<RegistrationError[] | null> => {
         const res = await fetch("/api/auth/register", {
             method: "POST",
             headers: {
@@ -58,8 +66,8 @@ export const AuthProvider = ({ children }: any) => {
         if (res.status == 200) {
             return null;
         }
-        const failureMessage = await res.text();
-        return failureMessage;
+        const errs = await res.json();
+        return errs.errors;
     }
 
     const logout = () => {

@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth, AuthContextValues } from './AuthProvider';
+import { Alert, Button, TextField } from '@mui/material';
 
+interface RegistrationError {
+    type: string;
+    value: string;
+    msg: string;
+    path: string;
+    location: string;
+}
 
 const RegisterPage = () => {
     const auth: AuthContextValues | null = useAuth();
@@ -9,7 +17,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState<string>('');
     const [fullname, setFullname] = useState<string>('');
     const [birthdate, setBirthdate] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<RegistrationError[] | null>(null);
     const navigate = useNavigate();
 
     // if the user is already logged in, navigate back to the home page
@@ -22,39 +30,26 @@ const RegisterPage = () => {
         return null;
     
     const handleRegister = async () => {
-        const possibleError: null | string = await auth.onRegister(
+        const possibleErrors: null | RegistrationError[] = await auth.onRegister(
             email,
             password,
             fullname,
             birthdate
         );
-        if (possibleError == null) {
+        if (possibleErrors == null) {
             navigate("/login");
         }
-        setError(possibleError);
+        setErrors(possibleErrors);
     }
 
-    let eighteenYearsAgo = new Date();
-    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
-    const dateStr = `${eighteenYearsAgo.getFullYear()}-${("0" + (eighteenYearsAgo.getMonth() + 1)).slice(-2)}-${ ("0" + eighteenYearsAgo.getDay()).slice(-2) }`;
     return (
         <div>
-            <form>
-                <label>Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-
-                <label>Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-
-                <label>Full name</label>
-                <input value={fullname} onChange={(e) => setFullname(e.target.value)}/>
-
-                <label>Birthdate</label>
-                <input type="date" max={dateStr} value={birthdate} onChange={(e) => setBirthdate(e.target.value)}/>
-
-                <input type="submit" onClick={(e) => {e.preventDefault(); handleRegister();}}/>
-            </form>
-            {error !== null ? <p>Error: {error}</p> : <></>}
+            <TextField fullWidth label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <TextField fullWidth label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <TextField fullWidth label="Full name" value={fullname} onChange={(e) => setFullname(e.target.value)}/>
+            <TextField fullWidth label="Date of birth" type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)}/>
+            <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleRegister();}}>Register</Button>
+            {errors !== null ? errors.map(e => <Alert severity="warning">{e.path}: {e.msg}</Alert>) : null}
         </div>
     );
 }
