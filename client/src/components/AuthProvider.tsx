@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: any) => {
         localStorage.removeItem("email");
         setUserEmail(null);
     }
-    // note: the token could be invalid, or outdated
+
     const isLoggedIn = () => token != null;
 
     const value: AuthContextValues = {

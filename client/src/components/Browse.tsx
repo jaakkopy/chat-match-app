@@ -81,7 +81,6 @@ const UserBrowser = () => {
   const postToLikeOrDislike = async (url: string) => {
     if (auth === null || users.length == 0 || index >= users.length)
       return null;
-    // TODO: error handling
     const userEmail = users[index].email;
     const res = await fetch(url, {
       method: "POST",

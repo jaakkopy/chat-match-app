@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
-import { Button, FormControl, Input, InputLabel, TextField } from '@mui/material';
+import { Alert, Button, FormControl, Input, InputLabel, TextField } from '@mui/material';
 
 
 const LoginPage = () => {
@@ -24,19 +24,19 @@ const LoginPage = () => {
         const possibleError: null | string = await auth.onLogin(email, password);
         setError(possibleError);
         // If OK, redirect to home
-        if (error === null) {
+        if (possibleError === null) {
             navigate("/");
         }
     }
 
     return (
-        <form>
+        <div>
             <TextField fullWidth required label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <TextField fullWidth required label="Password" id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
             <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}>Login</Button>
-            {error !== null ? <p>Error: {error}</p> : <></>}
-        </form>
+            {error !== null ? <Alert severity="warning">Error: {error}</Alert> : <></>}
+        </div>
     );
 }
 
