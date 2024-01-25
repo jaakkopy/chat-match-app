@@ -12,10 +12,12 @@ import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
 import { OldChatMessage } from "../models/Chat";
 import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { useFetch } from "./useFetch";
 
 
 const Chat = () => {
     const auth = useAuth();
+    const fetchHelp = useFetch();
     const { state } = useLocation();
     const profile: UserProfile = state.profile; // Read values passed on state
     const [messageHistory, setMessageHistory] = useState<OldChatMessage[]>([]);
@@ -32,13 +34,7 @@ const Chat = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetch(
-                    `/api/chat/history/${profile.email}`, {
-                    headers: {
-                        Authorization: `Bearer ${auth.token}`
-                    }
-                }
-                );
+                const res = await fetchHelp.get(`/api/chat/history/${profile.email}`);
                 if (res.status == 200) {
                     const { history } = await res.json();
                     setMessageHistory(history);
@@ -51,7 +47,7 @@ const Chat = () => {
 
     useEffect(() => {
         if (readyState === ReadyState.OPEN && auth !== null) {
-            console.log("Connection open. Sending first message");
+            // The connection has opened. Send the first message to authenticate for the websocket connection
             sendJsonMessage({
                 jwt: auth.token,
                 receiverEmail: profile.email
@@ -71,6 +67,7 @@ const Chat = () => {
 
     useEffect(() => {
         if (lastJsonMessage) {
+            // A new message has been written to the websocket by the server. Add it to the history.
             // @ts-ignore
             const msg = lastJsonMessage.content;
             setMessageHistory(messageHistory.concat({ senderEmail: profile.email, content: msg, dateSent: formatDate() }));

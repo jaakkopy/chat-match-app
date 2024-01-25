@@ -11,6 +11,8 @@ import UserProfile from '../models/User';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
+import { useFetch } from './useFetch';
+import { Alert } from '@mui/material';
 
 
 const modalStyle = {
@@ -46,20 +48,17 @@ const MatchModal = ({ modalOpen, onModalYesClick, onModalNoClick }: { modalOpen:
 const UserBrowser = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const fetchHelp = useFetch();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [index, setIndex] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState<any>(null);
 
   const fetchUsers = async () => {
     if (auth === null)
       return;
-    const res = await fetch("/api/user/browse", {
-      headers: {
-        Authorization: `Bearer ${auth.token}`
-      }
-    });
-    // TODO: handle possible error
+    const res = await fetchHelp.get("/api/user/browse");
     if (res.status == 200) {
       const js = await res.json();
       if (js.users.length == 0) {
@@ -67,6 +66,9 @@ const UserBrowser = () => {
       }
       setUsers(js.users);
       setIndex(0);
+    } else {
+      const msg = await res.text();
+      setError(msg);
     }
   }
 
@@ -82,19 +84,9 @@ const UserBrowser = () => {
     if (auth === null || users.length == 0 || index >= users.length)
       return null;
     const userEmail = users[index].email;
-    const res = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: userEmail
-      }),
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${auth.token}`
-      }
-    });
+    const res = await fetchHelp?.postJson(url, {email: userEmail});
     return res;
   }
-
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -148,11 +140,7 @@ const UserBrowser = () => {
   });
 
   if (index >= users.length || users.length == 0) {
-    return (
-      <div>
-        <p>Sorry. There are no more users to browse</p>
-      </div>
-    );
+    return <Alert severity='info'>There are no more users to browse</Alert>;
   }
 
   const onModalYesClick = () => {
@@ -164,6 +152,10 @@ const UserBrowser = () => {
     handleModalClose();
     incrementIndex();
   }
+
+
+  if (error !== null)
+    return <Alert severity='error'>Error: {error}</Alert>;
 
   return (
     <div {...handlers} style={{ touchAction: 'pan-y' }}>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, FormControl, Input, InputLabel, TextField } from '@mui/material';
+import { Alert, Button, TextField } from '@mui/material';
 
 
 const LoginPage = () => {

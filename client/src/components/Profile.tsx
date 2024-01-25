@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Box, Avatar, Stack, Typography, Divider, Card, CardHeader, CardContent, TextField, Button } from "@mui/material";
+import { Avatar, Typography, Card, CardHeader, CardContent, TextField, Button } from "@mui/material";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -7,9 +7,11 @@ import EditIcon from '@mui/icons-material/Edit';
 
 import UserProfile from "../models/User";
 import { useAuth } from "./AuthProvider";
+import { useFetch } from "./useFetch";
 
 const Profile = () => {
     const auth = useAuth();
+    const fetchHelp = useFetch();
     const [profile, setProfile] = useState<UserProfile>();
     const [profileText, setProfileText] = useState<string>(profile?.profiletext ?? '');
     const [profileTextInput, setProfileTextInput] = useState<string>(profile?.profiletext ?? '');
@@ -18,11 +20,7 @@ const Profile = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetch("/api/user/profile", {
-                    headers: {
-                        Authorization: `Bearer ${auth.token}`
-                    }
-                });
+                const res = await fetchHelp.get("/api/user/profile");
                 if (res.status == 200) {
                     const js = await res.json();
                     setProfile(js.profile);
@@ -38,20 +36,8 @@ const Profile = () => {
     const updateProfileText = async () => {
         if (auth === null)
             return;
-        
         const newProfileText = profileTextInput;
-        
-        const res = await fetch("/api/user/profile", {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${auth.token}`,
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify({
-                profileText: newProfileText
-            })
-        });
-
+        const res = await fetchHelp.putJson("/api/user/profile", {profileText: newProfileText});
         if (res.status == 200) {
             setProfileText(newProfileText);
         }
