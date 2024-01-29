@@ -21,6 +21,7 @@ const insertDislike = async (dislikerEmail: string, dislikedEmail: string): Prom
         );
 }
 
+// Get the emails of users that the requester has liked
 const getLikedUsersOfUser = async (email: string): Promise<DBRows> => {
     return query(
         `SELECT u.email FROM likes l 
@@ -31,6 +32,7 @@ const getLikedUsersOfUser = async (email: string): Promise<DBRows> => {
     );
 }
 
+// Get the emails of users that the requester has disliked
 const getDislikedUsersOfUser = async (email: string): Promise<DBRows> => {
     return query(
         `SELECT u.email FROM dislikes l 
@@ -41,6 +43,7 @@ const getDislikedUsersOfUser = async (email: string): Promise<DBRows> => {
     );
 }
 
+// Check if the two users have liked each other
 const verifyMutualLikes = async (email1: string, email2: string): Promise<boolean> => {
     // Do two separate calls for now
     const likesOf1 = await getLikedUsersOfUser(email1);

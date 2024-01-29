@@ -13,6 +13,7 @@ chatRouter.get("/history/:user",
         // @ts-ignore
         const requesterEmail: string = req.user.email;
         const targetUserEmail: string = req.params.user;
+        // Get the past messages sent between the  two users (requester and target), and return them
         const result: ServiceResult = await chatService.getChatHistoryBatch(requesterEmail, targetUserEmail, getDB());
         if (result.ok) {
             return res.status(result.status).json({history: result.data});

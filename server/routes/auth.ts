@@ -23,6 +23,7 @@ authRouter.post("/register",
     ], 
     async (req: Request, res: Response) => {
     
+    // Check that the fields are ok
     const valRes = validationResult(req);
     if (!valRes.isEmpty())
         return res.status(400).json({errors: valRes.array()});
@@ -35,6 +36,7 @@ authRouter.post("/register",
             fullname: data.fullname,
             birthdate: data.birthdate
         };
+        // Register the new user.
         const result: ServiceResult = await authService.register(fields, getDB());
         return res.status(result.status).send(result.msg);
     } catch (e) {
@@ -53,6 +55,7 @@ authRouter.post("/login",
         return res.status(400).json({errors: valRes.array()});
     
     try {
+        // Try to login the user. If the credentials are correct, return a JWT
         const data = matchedData(req);
         const credentials: Credentials = {email: data.email, password: data.password};
         const result: ServiceResult = await authService.login(credentials, getDB());

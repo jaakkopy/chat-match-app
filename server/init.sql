@@ -77,3 +77,7 @@ $$ LANGUAGE plpgsql;
 -- Create the triggers
 CREATE TRIGGER check_like_when_disliking BEFORE INSERT ON dislikes FOR EACH ROW EXECUTE PROCEDURE check_like_when_disliking();
 CREATE TRIGGER check_dislike_when_liking BEFORE INSERT ON likes FOR EACH ROW EXECUTE PROCEDURE check_dislike_when_liking();
+
+
+-- Time zone
+SET TIME ZONE 'Europe/Helsinki';

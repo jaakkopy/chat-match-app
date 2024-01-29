@@ -31,10 +31,9 @@ const register = async (fields: RegistrationFields, db: DB): Promise<ServiceResu
     } catch (e) {
         if (db.errors.isUniqueConstraintError(e)) {
             return defaultInvalidRequestResult("Credentials already taken");
-        } else {
-            console.error(e);
-            return defaultInternalErrorResult();
         }
+        console.error(e);
+        return defaultInternalErrorResult();
     }
     return defaultServiceResult();
 }
@@ -42,7 +41,6 @@ const register = async (fields: RegistrationFields, db: DB): Promise<ServiceResu
 
 const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
     let invalidCredsResult = defaultInvalidRequestResult("Invalid credentials");
-    let pwFromDb: string = '';
     // Fetch the hashed password from the database
     try {
         const rows = await db.users.getUserByEmail(creds.email);
@@ -50,13 +48,14 @@ const login = async (creds: Credentials, db: DB): Promise<ServiceResult> => {
         if (rows.length == 0) {
             return invalidCredsResult;
         }
-        pwFromDb = rows[0].passwordhash;
+        // Compare the given password to the hash from the database
+        const pwFromDb = rows[0].passwordhash;
         const isMatch = await compare(creds.password, pwFromDb);
-        // Wrong password
         if (!isMatch) {
+            // Wrong password
             return invalidCredsResult;
         }
-        // Create a JWT
+        // Create a JWT with the email as payload and return it
         const jwtPayload = {
             email: creds.email
         }

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import userService from '../services/user-service'; 
 import passport from 'passport';
-import { validationResult, body, matchedData } from 'express-validator';
+import { validationResult, body } from 'express-validator';
 import { UserProfileUpdateFields } from '../models/user';
 
 import getDB from '../db/db';
@@ -11,6 +11,7 @@ const userRouter = Router();
 
 userRouter.get("/profile", passport.authenticate("jwt", {session: false}), async (req: Request, res: Response) => {
     try {
+        // Get the profile information of the requester
         // @ts-ignore
         const result: ServiceResult = await userService.getByEmail(req.user.email, getDB());
         if (result.ok) {
@@ -34,6 +35,7 @@ userRouter.put("/profile",
         return res.status(400).json({errors: valRes.array()});
 
     try {
+        // Update the profile of the requester (currently just profile text supported)
         const updateRequest: UserProfileUpdateFields = {profiletext: req.body.profileText};
         // @ts-ignore
         const result: ServiceResult = await userService.updateProfile(req.user.email, updateRequest, getDB())
@@ -45,7 +47,7 @@ userRouter.put("/profile",
 });
 
 
-// Get a certain amount of random user profiles, which are not liked or disliked, for browsing.
+// Get a certain amount of user profiles, which are not liked or disliked, for browsing.
 userRouter.get("/browse", passport.authenticate("jwt", {session: false}), async (req: Request, res: Response) => {
     try {
         // @ts-ignore

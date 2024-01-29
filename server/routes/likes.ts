@@ -22,6 +22,7 @@ likesRouter.post("/like", [
         const likerEmail = req.user.email;
         const result: ServiceResult = await likesService.addLike(likerEmail, data.email, getDB());
         if (result.ok) {
+            // Like successful. If both users like each other, mutualLikes is true
             return res.status(result.status).json({mutualLikes: result.data});
         }
         res.status(result.status).send(result.msg);
@@ -58,6 +59,7 @@ likesRouter.get("/matches",
     passport.authenticate("jwt", {session: false}),
     async (req: Request, res: Response) => {
         try {
+            // Get a list of users that the requester has liked, and which like the requester
             // @ts-ignore
             const result: ServiceResult = await likesService.getMatches(req.user.email, getDB());
             if (result.ok)

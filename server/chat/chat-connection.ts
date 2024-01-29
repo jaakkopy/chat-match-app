@@ -27,6 +27,10 @@ class ChatConn implements ChatConnection {
         this.ws = ws;
     }
 
+    /*
+    The first message that is sent after opening the websocket connection
+    should contain a valid JWT and the target user email to chat with
+    */
     parseFirstMessage(msg: string): FirstChatMessage | null {
         const asJson = JSON.parse(msg);
         if (!asJson.jwt || !asJson.receiverEmail)
@@ -34,6 +38,10 @@ class ChatConn implements ChatConnection {
         return asJson;
     }
 
+    /*
+    Representes messages sent after the first message.
+    Should contain the sender email and the content of the message
+    */
     parseMessage(msg: string): ChatMessage | null {
         let asJson = JSON.parse(msg);
         if (!asJson.senderEmail || !asJson?.content)
@@ -80,8 +88,8 @@ class ChatConn implements ChatConnection {
                     this.ws.close();
                     return;
                 }
+                // Register this object with the user's email
                 chatObjectStore.register(this.userEmail, this);
-                console.log(this.userEmail, "registered for chatting");
             } else {
                 this.ws.send("HTTP/1.1 401 Nonexistent email\r\n\r\n");
                 this.ws.close();
@@ -89,9 +97,14 @@ class ChatConn implements ChatConnection {
         }
     }
 
+    /*
+    Another user has written a message to this user.
+    Check that this chat connection associated with the sender.
+    If it is, write the message to the websocket
+    */
     receiveMessageFromOther(msg: ChatMessage) {
-        console.log(this.userEmail, "received message from other:", msg.senderEmail);
-        this.ws.send(JSON.stringify(msg));
+        if (msg.senderEmail == this.receiverEmail)
+            this.ws.send(JSON.stringify(msg));
     }
 
     receiveMessageFromWs(msg: string) {

@@ -12,6 +12,7 @@ const getChatHistoryBatch = async (
     targetUserEmail: string,
     db: DB): Promise<ServiceResult> => {
     try {
+        // Get the message history between the two users. Extract only the necessary fields
         const chatHistory: OldChatMessage[] = (await db.messages.getMessages(requesterEmail, targetUserEmail)).map(m => {
             return {
                 senderEmail: m.sender_email,

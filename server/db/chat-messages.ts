@@ -2,6 +2,7 @@ import { DBMessages, DBRows } from '../models/db-interface';
 import query from './pool';
 
 
+// Add the given message to the database with the current timestamp (note: depends on the database time zone)
 const insertMessage = async (senderEmail: string, receiverEmail: string, content: string): Promise<DBRows> => {
     return query(
         `INSERT INTO messages (sender, receiver, content, date_sent) VALUES (
@@ -14,7 +15,8 @@ const insertMessage = async (senderEmail: string, receiverEmail: string, content
     );
 }
 
-
+// Get the messages sent between the two users.
+// Returns the fields for the sender's email, the message timestamp and the message content
 const getMessages = async (requesterEmail: string, targetUserEmail: string): Promise<DBRows> => {
     return query(
         `WITH us(user1, user2) AS (VALUES(

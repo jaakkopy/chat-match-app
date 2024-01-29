@@ -1,5 +1,9 @@
 import ServiceResult from "../models/service-result"
 
+/*
+Convenience functions for returning common service results
+*/
+
 export const defaultServiceResult = (data?: any): ServiceResult => {
     return {
         ok: true,
