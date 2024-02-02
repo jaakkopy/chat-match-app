@@ -58,7 +58,7 @@ const UserBrowser = () => {
   const fetchUsers = async () => {
     if (auth === null)
       return;
-    const res = await fetchHelp.get("/api/user/browse");
+    const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/user/browse`);
     if (res.status == 200) {
       const js = await res.json();
       if (js.users.length == 0) {
@@ -107,7 +107,7 @@ const UserBrowser = () => {
 
   const handleLike = async () => {
     try {
-      const res = await postToLikeOrDislike("/api/likes/like");
+      const res = await postToLikeOrDislike(`${process.env.REACT_APP_SERVER_BASE_URL}/api/likes/like`);
       const { mutualLikes } = await res?.json();
       // Both users have liked each other. Ask if the user wants to start chatting
       if (mutualLikes) {
@@ -124,7 +124,7 @@ const UserBrowser = () => {
   }
 
   const handleDislike = async () => {
-    postToLikeOrDislike("/api/likes/dislike");
+    postToLikeOrDislike(`${process.env.REACT_APP_SERVER_BASE_URL}/api/likes/dislike`);
     incrementIndex();
   }
 

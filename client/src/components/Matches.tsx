@@ -23,7 +23,7 @@ const Matches = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetchHelp.get("/api/likes/matches");
+                const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/likes/matches`);
                 if (res.status != 200) {
                     const reason = await res.text();
                     setError(reason);

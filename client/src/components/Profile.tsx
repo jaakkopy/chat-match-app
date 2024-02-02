@@ -20,7 +20,7 @@ const Profile = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetchHelp.get("/api/user/profile");
+                const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/user/profile`);
                 if (res.status == 200) {
                     const js = await res.json();
                     setProfile(js.profile);
@@ -37,7 +37,7 @@ const Profile = () => {
         if (auth === null)
             return;
         const newProfileText = profileTextInput;
-        const res = await fetchHelp.putJson("/api/user/profile", {profileText: newProfileText});
+        const res = await fetchHelp.putJson(`${process.env.REACT_APP_SERVER_BASE_URL}/api/user/profile`, {profileText: newProfileText});
         if (res.status == 200) {
             setProfileText(newProfileText);
         }

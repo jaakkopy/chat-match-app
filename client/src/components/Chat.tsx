@@ -23,8 +23,8 @@ const Chat = () => {
     const [messageHistory, setMessageHistory] = useState<OldChatMessage[]>([]);
     const [message, setMessage] = useState<string>('');
     const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
-        // TODO: Add the proxy
-        "ws://localhost:8000", {
+        // Workaround due to proxy not working as expected. This requires that the production app is served from the server
+        `${process.env.NODE_ENV == 'production' ?  `ws://${window.location.host}` : process.env.REACT_APP_WS_SERVER_URL}`, {
         share: false,
         shouldReconnect: () => true,
     },
@@ -34,7 +34,7 @@ const Chat = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetchHelp.get(`/api/chat/history/${profile.email}`);
+                const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/chat/history/${profile.email}`);
                 if (res.status == 200) {
                     const { history } = await res.json();
                     setMessageHistory(history);
