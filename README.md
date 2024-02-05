@@ -23,7 +23,7 @@
 ## Other
 - [Docker](https://www.docker.com/): Used mainly for making the testing and deployment of the application easier (avoid bothersome manual installations and configurations)
 
-# Installation and setup guide
+# Installation, setup, and running guide
 ## Environment variable files
 For both of the cases listed below (docker or without), `.env` files need to be created.
 1. From the root a the project, `cd` into `server`, and create a file called `.env` with the following keys (*the values are just for example, but they work for testing purposes*):
@@ -92,3 +92,11 @@ JWT_SECRET="123abc"
 
 
 # User manual
+When trying out the app, if you don't want to manually create users to try out all the features, you can run the `insert-demo-users.ts` script from the `server` directory to create some demo users.
+```
+NODE_ENV=<'production' or 'test' depending on which DB you wish to insert to> npx ts-node ./insert-demo-users.ts
+```
+
+1. Start the app with either of the methods described above
+2. Use your browser to navigate to the address of the server.
+3. To continue ...
