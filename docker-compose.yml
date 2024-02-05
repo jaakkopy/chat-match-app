@@ -1,0 +1,23 @@
+services:
+  
+  match_app:
+    container_name: match-app
+    build: .
+    network_mode: host
+  
+  postgres_db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER} 
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    network_mode: host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+volumes:
+  postgres_data:
+    driver: local

@@ -31,6 +31,10 @@ app.use('/api/user', userRouter);
 app.use('/api/likes', likesRouter);
 app.use('/api/chat', chatRouter);
 
-app.use(express.static(path.join(__dirname, "..", "client", 'build')));
+if (process.env.NODE_ENV == 'production') {
+    app.use(express.static(path.join(__dirname, "..", "..", "client", 'build')));
+} else {
+    app.use(express.static(path.join(__dirname, "..", "client", 'build')));
+}
 
 export default app;
