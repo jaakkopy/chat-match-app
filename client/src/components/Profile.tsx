@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import UserProfile from "../models/User";
 import { useAuth } from "./AuthProvider";
 import { useFetch } from "./useFetch";
+import { getServerAddr } from "./server_addr";
 
 const Profile = () => {
     const auth = useAuth();
@@ -20,7 +21,7 @@ const Profile = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/user/profile`);
+                const res = await fetchHelp.get(`${getServerAddr()}/api/user/profile`);
                 if (res.status == 200) {
                     const js = await res.json();
                     setProfile(js.profile);
@@ -37,7 +38,7 @@ const Profile = () => {
         if (auth === null)
             return;
         const newProfileText = profileTextInput;
-        const res = await fetchHelp.putJson(`${process.env.REACT_APP_SERVER_BASE_URL}/api/user/profile`, {profileText: newProfileText});
+        const res = await fetchHelp.putJson(`${getServerAddr()}/api/user/profile`, {profileText: newProfileText});
         if (res.status == 200) {
             setProfileText(newProfileText);
         }

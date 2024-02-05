@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getServerAddr } from './server_addr';
 
 // This component, and other parts of the authentication/authorization code were inspired by:
 // https://www.robinwieruch.de/react-router-authentication/
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: any) => {
     const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem("email"));
 
     const login = async (email: string, password: string) => {
-        const res = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/login`, {
+        const res = await fetch(`${getServerAddr()}/api/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }: any) => {
         password: string,
         fullname: string,
         birthdate: string): Promise<RegistrationError[] | null> => {
-        const res = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/register`, {
+        const res = await fetch(`${getServerAddr()}/api/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

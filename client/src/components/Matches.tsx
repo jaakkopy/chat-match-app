@@ -9,6 +9,7 @@ import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
 import { Alert, Avatar, Box, Pagination } from '@mui/material';
 import { useFetch } from './useFetch';
+import { getServerAddr } from './server_addr';
 
 const Matches = () => {
     const [page, setPage] = useState(1);
@@ -23,7 +24,7 @@ const Matches = () => {
         let mounted = true;
         const f = async () => {
             if (mounted && auth !== null) {
-                const res = await fetchHelp.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/likes/matches`);
+                const res = await fetchHelp.get(`${getServerAddr()}/api/likes/matches`);
                 if (res.status != 200) {
                     const reason = await res.text();
                     setError(reason);
