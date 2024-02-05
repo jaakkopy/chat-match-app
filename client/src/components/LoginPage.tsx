@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert, Button, InputLabel, TextField } from '@mui/material';
 
 
 const LoginPage = () => {
@@ -31,8 +31,10 @@ const LoginPage = () => {
 
     return (
         <div>
-            <TextField fullWidth required label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <TextField fullWidth required label="Password" id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <InputLabel>Email</InputLabel>
+            <TextField margin="normal" fullWidth required type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <InputLabel>Password</InputLabel>
+            <TextField margin="normal" fullWidth required id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
             <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}>Login</Button>
             {error !== null ? <Alert severity="warning">Error: {error}</Alert> : null}

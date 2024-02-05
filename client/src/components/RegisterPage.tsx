@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth, AuthContextValues } from './AuthProvider';
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert, Button, InputLabel, TextField } from '@mui/material';
 
 interface RegistrationError {
     type: string;
@@ -44,10 +44,14 @@ const RegisterPage = () => {
 
     return (
         <div>
-            <TextField fullWidth label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <TextField fullWidth label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <TextField fullWidth label="Full name" value={fullname} onChange={(e) => setFullname(e.target.value)}/>
-            <TextField fullWidth label="Date of birth" type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)}/>
+            <InputLabel>Email</InputLabel>
+            <TextField margin="normal" fullWidth type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <InputLabel>Password</InputLabel>
+            <TextField margin="normal" fullWidth type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <InputLabel>Full name</InputLabel>
+            <TextField margin="normal" fullWidth value={fullname} onChange={(e) => setFullname(e.target.value)}/>
+            <InputLabel>Birthdate</InputLabel>
+            <TextField margin="normal" fullWidth type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)}/>
             <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleRegister();}}>Register</Button>
             {errors !== null ? errors.map(e => <Alert severity="warning">{e.path}: {e.msg}</Alert>) : null}
         </div>
