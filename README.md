@@ -42,7 +42,7 @@ REACT_APP_SERVER_HOST="localhost:8000"
 ```
 
 ## Using Docker
-If you don't want to install anything (besides Docker), you can use Docker with docker-compose. On the root of the project, you can just run the following command to build and run the containers (the database and the app):
+If you don't want to install anything (besides Docker and docker-compose), you can use Docker with docker-compose. On the root of the project, you can just run the following command to build and run the containers (the database and the app):
 ```
 docker-compose up -d --build
 ```
@@ -58,21 +58,21 @@ If you don't have Docker or don't want to use it, the following steps should be 
 **client setup**:
 1. `cd` into `client` 
 2. Run `npm install`
-3. Run `npm build`
+3. Run `npm run build`
 
 **database setup**:
 1. Install PostgreSQL for your system
-2. From the root of the project, run the initialization script: `psql -U <postgres user> -d <database name> < init.sql`
+2. Create a database
+3. From the root of the project, run the initialization script: `psql -U <postgres user> -d <database name> < init.sql`
 
 **server setup**:
 1. `cd` into `server`
 2. Run `npm install`
-3. For the development mode, you can run the project with `npm run dev`
-3. For the production mode, you can run build the project with `npm run tsc`, and run it with `npm run start`.
+3. Run `npm run tsc` to build the server
 
 If everything was set up correctly, you can run the project:
-- **Development mode**: In the `client` directory, run `npm start`, and in the `server` directory, run `npm run dev`
-- **Production mode**: In the `server` directory, run `npm run start`
+- **Development mode**: In the `client` directory, run `npm start`, and in the `server` directory, run `npm run dev`. The UI should be accessible from http://localhost:3000
+- **Production mode**: In the `server` directory, run `npm run start`. The UI should be accessible from http://localhost:8000
 
 # Testing guide
 Some tests have been implemented for the server. During development, the tests were ran using a separate Docker container. Other ways work as well, but the following guide is for using the container approach:
