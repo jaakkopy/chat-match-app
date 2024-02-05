@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate  } from 'react-router-dom';
 import { AuthProvider } from './components/AuthProvider';
-import Home from './components/Home';
 import NotFound from './components/NotFound';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
@@ -31,8 +30,7 @@ function App() {
             <CssBaseline/>
             <Header>
                 <Routes>
-                    <Route index element={ <Protected><Home/></Protected> }/>
-                    <Route path="/match" element={ <Protected><Matches/></Protected> }/>
+                    <Route index element={ <Protected><Matches/></Protected> }/>
                     <Route path="/browse" element={ <Protected><UserBrowser/></Protected> }/>
                     <Route path="/chat" element={ <Protected><Chat/></Protected> }/>
                     <Route path="/profile" element={ <Protected><Profile/></Protected> }/>

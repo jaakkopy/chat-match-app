@@ -1,6 +1,5 @@
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -57,8 +56,7 @@ const Header = ({children}: any) => {
                 {auth?.isLoggedIn() ? 
                     /* Show only if logged in */
                     <>
-                        <HeaderDrawerLinkItem link="/" text="Home"/>
-                        <HeaderDrawerLinkItem link="/match" text="Matches"/>
+                        <HeaderDrawerLinkItem link="/" text="Matches"/>
                         <HeaderDrawerLinkItem link="/browse" text="Browse"/>
                         <HeaderDrawerLinkItem link="/profile" text="My profile"/>
                         <Button color="inherit" onClick={auth?.onLogout}>{"Logout"}</Button>
@@ -101,8 +99,7 @@ const Header = ({children}: any) => {
                 {auth?.isLoggedIn() ? 
                     /* Show only if logged in */
                     <>
-                        <Button color="inherit" component={RouterLink} to="/">{"Home"}</Button>
-                        <Button color="inherit" component={RouterLink} to="/match">{"Matches"}</Button>
+                        <Button color="inherit" component={RouterLink} to="/">{"Matches"}</Button>
                         <Button color="inherit" component={RouterLink} to="/browse">{"Browse"}</Button>
                         <Button color="inherit" component={RouterLink} to="/profile">{"My Profile"}</Button>
                         <Button color="inherit" onClick={auth?.onLogout}>{"Logout"}</Button>

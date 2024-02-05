@@ -57,7 +57,7 @@ const Profile = () => {
                         aria-controls="panel1-content"
                         id="panel1-header"
                     >
-                        <Typography>{profileText != '' ? profileText : "No profile text added yet. Click to edit"}</Typography>
+                        <Typography>{profileText ? profileText : "No profile text added yet. Click to edit"}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <TextField value={profileTextInput} onChange={(e) => setProfileTextInput(e.target.value)}/>
