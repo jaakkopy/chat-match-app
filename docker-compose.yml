@@ -4,6 +4,8 @@ services:
     container_name: match-app
     build: .
     network_mode: host
+    depends_on:
+      - postgres_db # make sure that postgres is up before the app, so it can connect
   
   postgres_db:
     image: postgres:latest
