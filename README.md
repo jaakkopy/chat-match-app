@@ -74,7 +74,7 @@ If you don't have Docker or don't want to use it, the following steps should be 
 2. Run `npm install`
 3. Run `npm run tsc` to build the server
 
-If everything was set up correctly, you can run the project:
+If everything was set up correctly, and the database is running, you can run the project:
 - **Development mode**: In the `client` directory, run `npm start`, and in the `server` directory, run `npm run dev`. The UI should be accessible from http://localhost:3000
 - **Production mode**: In the `server` directory, run `npm run start`. The UI should be accessible from http://localhost:8000
 

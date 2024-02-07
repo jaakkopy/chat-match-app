@@ -30,6 +30,7 @@ const Chat = () => {
     },
     );
 
+    // Fetch the message history between the two users
     useEffect(() => {
         let mounted = true;
         const f = async () => {
@@ -45,6 +46,7 @@ const Chat = () => {
         return () => { mounted = false; }
     }, []);
 
+    // An effect reacting to the change of state of the websocket
     useEffect(() => {
         if (readyState === ReadyState.OPEN && auth !== null) {
             // The connection has opened. Send the first message to authenticate for the websocket connection
@@ -55,7 +57,7 @@ const Chat = () => {
         }
     }, [readyState]);
 
-
+    // Return a formatted date. If d is not undefined, its time will be used. If d is undefined, a new date will be created.
     const formatDate = (d?: Date | string): string => {
         if (!d) {
             d = new Date();
@@ -65,6 +67,7 @@ const Chat = () => {
         return d.toLocaleString();
     }
 
+    // An effect reacting to the change of the latest websocket message
     useEffect(() => {
         if (lastJsonMessage) {
             // A new message has been written to the websocket by the server. Add it to the history.
@@ -74,6 +77,7 @@ const Chat = () => {
         }
     }, [lastJsonMessage]);
 
+    // For writing a message to the websocket
     const sendMessage = () => {
         if (readyState === ReadyState.OPEN && auth !== null) {
             sendJsonMessage({

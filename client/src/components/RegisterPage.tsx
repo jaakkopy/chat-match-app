@@ -2,14 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { Alert, Button, InputLabel, TextField } from '@mui/material';
-
-interface RegistrationError {
-    type: string;
-    value: string;
-    msg: string;
-    path: string;
-    location: string;
-}
+import ValidationError from './validation-error';
 
 const RegisterPage = () => {
     const auth: AuthContextValues | null = useAuth();
@@ -17,7 +10,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState<string>('');
     const [fullname, setFullname] = useState<string>('');
     const [birthdate, setBirthdate] = useState<string>('');
-    const [errors, setErrors] = useState<RegistrationError[] | null>(null);
+    const [errors, setErrors] = useState<ValidationError[] | null>(null);
     const navigate = useNavigate();
 
     // if the user is already logged in, navigate back to the home page
@@ -30,7 +23,7 @@ const RegisterPage = () => {
         return null;
     
     const handleRegister = async () => {
-        const possibleErrors: null | RegistrationError[] = await auth.onRegister(
+        const possibleErrors: null | ValidationError[] = await auth.onRegister(
             email,
             password,
             fullname,

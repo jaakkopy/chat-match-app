@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
 import { getServerAddr } from './server_addr';
+import ValidationError from './validation-error';
 
 // This component, and other parts of the authentication/authorization code were inspired by:
 // https://www.robinwieruch.de/react-router-authentication/
-// Some modifications were made.
-
-export interface RegistrationError {
-    type: string;
-    value: string;
-    msg: string;
-    path: string;
-    location: string;
-}
+// Modifications were made.
 
 export interface AuthContextValues {
     token: string | null;
     userEmail: string | null;
-    onLogin: (email: string, password: string) => Promise<string | null>;
-    onRegister: (email: string, password: string, fullname: string, birthdate: string) => Promise<RegistrationError[] | null>;
+    onLogin: (email: string, password: string) => Promise<ValidationError[] | null>;
+    onRegister: (email: string, password: string, fullname: string, birthdate: string) => Promise<ValidationError[] | null>;
     onLogout: () => void;
     isLoggedIn: () => boolean;
 }
@@ -46,15 +39,15 @@ export const AuthProvider = ({ children }: any) => {
             setUserEmail(email);
             return null;
         }
-        const failureMessage = await res.text();
-        return failureMessage;
+        const errs = await res.json();
+        return errs.errors;
     };
 
     const register = async (
         email: string,
         password: string,
         fullname: string,
-        birthdate: string): Promise<RegistrationError[] | null> => {
+        birthdate: string): Promise<ValidationError[] | null> => {
         const res = await fetch(`${getServerAddr()}/api/auth/register`, {
             method: "POST",
             headers: {

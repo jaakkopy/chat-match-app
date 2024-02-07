@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { useAuth, AuthContextValues } from './AuthProvider';
 import { useNavigate } from "react-router-dom";
 import { Alert, Button, InputLabel, TextField } from '@mui/material';
-
+import ValidationError from './validation-error';
 
 const LoginPage = () => {
     const auth: AuthContextValues | null = useAuth();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<ValidationError[] | null>(null);
     const navigate = useNavigate();
 
     // if the user is already logged in, navigate back to the home page
@@ -21,10 +21,10 @@ const LoginPage = () => {
         return null;    
 
     const handleLogin = async () => {
-        const possibleError: null | string = await auth.onLogin(email, password);
-        setError(possibleError);
+        const possibleErrors: null | ValidationError[] = await auth.onLogin(email, password);
+        setErrors(possibleErrors);
         // If OK, redirect to home
-        if (possibleError === null) {
+        if (possibleErrors === null) {
             navigate("/");
         }
     }
@@ -35,9 +35,8 @@ const LoginPage = () => {
             <TextField margin="normal" fullWidth required type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <InputLabel>Password</InputLabel>
             <TextField margin="normal" fullWidth required id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
             <Button variant="outlined" type="submit" onClick={(e) => {e.preventDefault(); handleLogin();}}>Login</Button>
-            {error !== null ? <Alert severity="warning">Error: {error}</Alert> : null}
+            {errors !== null ? errors.map(e => <Alert severity="warning">{e.path}: {e.msg}</Alert>) : null}
         </div>
     );
 }
