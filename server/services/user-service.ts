@@ -58,10 +58,21 @@ const updateProfile = async (email: string, fields: UserProfileUpdateFields, db:
 }
 
 
+const deleteAccount = async (email: string, db: DB): Promise<ServiceResult> => {
+    try {
+        await db.users.deleteUser(email);
+        return defaultServiceResult();
+    } catch (e) {
+        return defaultInternalErrorResult();
+    }
+}
+
+
 const userService = {
     getByEmail,
     getUsersForBrowsing,
-    updateProfile
+    updateProfile,
+    deleteAccount
 }
 
 export default userService;

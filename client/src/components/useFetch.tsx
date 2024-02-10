@@ -5,6 +5,7 @@ export interface FetchCalls {
     postJson: (url: string, body: any) => Promise<Response>;
     putJson: (url: string, body: any) => Promise<Response>;
     get: (url: string) => Promise<Response>;
+    del: (url: string) => Promise<Response>;
 }
 
 export const useFetch = (): FetchCalls => {
@@ -57,9 +58,23 @@ export const useFetch = (): FetchCalls => {
         return res;
     }
 
+    const del = async (url: string): Promise<Response> => {
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${auth?.token}`
+            }
+        });
+        if (res.status == 401) {
+            resetToLogin();
+        }
+        return res;
+    }
+
     return {
         postJson,
         putJson,
-        get
+        get,
+        del
     } 
 }

@@ -23,6 +23,7 @@ export interface DBUsers {
     getUserByEmail: (email: string) => Promise<DBRows>;
     getUsersNotLikedOrDisliked: (email: string, amount: number) => Promise<DBRows>;
     updateUserProfile: (email: string, fields: UserProfileUpdateFields) => Promise<DBRows>;
+    deleteUser: (email: string) => Promise<DBRows>;
 }
 
 export interface DBMessages {

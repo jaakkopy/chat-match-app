@@ -48,11 +48,21 @@ const updateUserProfile = (email: string, fields: UserProfileUpdateFields): Prom
     );
 }
 
+
+const deleteUser = (email: string): Promise<DBRows> => {
+    return query(
+        `DELETE FROM users WHERE email = $1`,
+        [email]
+    );
+}
+
+
 const dbUsers: DBUsers = {
     insertUser,
     getUserByEmail,
     getUsersNotLikedOrDisliked,
-    updateUserProfile
+    updateUserProfile,
+    deleteUser
 }
 
 export default dbUsers;
