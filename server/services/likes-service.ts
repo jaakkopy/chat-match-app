@@ -86,10 +86,21 @@ const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
 }
 
 
+const verifyMutualLikes = async (email1: string, email2: string, db: DB) => {
+    try {
+        const isMatch = await db.likes.verifyMutualLikes(email1, email2);
+        return defaultServiceResult(isMatch);
+    } catch (e) {
+        return defaultInternalErrorResult();
+    }
+}
+
+
 const likesService = {
     addLike,
     addDislike,
-    getMatches
+    getMatches,
+    verifyMutualLikes
 }
 
 export default likesService;

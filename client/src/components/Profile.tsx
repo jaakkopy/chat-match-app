@@ -41,6 +41,7 @@ const Profile = () => {
         const res = await fetchHelp.putJson(`${getServerAddr()}/api/user/profile`, {profileText: newProfileText});
         if (res.status == 200) {
             setProfileText(newProfileText);
+            setProfileTextInput('');
         }
     }
 

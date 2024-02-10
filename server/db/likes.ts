@@ -43,7 +43,7 @@ const getDislikedUsersOfUser = async (email: string): Promise<DBRows> => {
     );
 }
 
-// Check if the two users have liked each other
+// Check if the two users have liked each other. Return a boolean as indication
 const verifyMutualLikes = async (email1: string, email2: string): Promise<boolean> => {
     // Do two separate calls for now
     const likesOf1 = await getLikedUsersOfUser(email1);

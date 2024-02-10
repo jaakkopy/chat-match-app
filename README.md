@@ -1,5 +1,5 @@
 # About
-- An app where users can browse other users, like them and dislike them.
+- An app made for a school project where users can browse other users, like them and dislike them.
 - The users who have liked each other can chat in real time and send messages even if the other user is offline.
 - The app is based on the standard client/server model.
 
@@ -127,3 +127,18 @@ NODE_ENV=<'production' or 'test' depending on which DB you wish to insert to> np
 - My Profile view:
     1. The "My Profile" view is a simple view where the name and birthdate of the user is shown.
     2. The profile text, which is shown to other users, can be edited.
+
+# Requested points
+
+
+| Feature | Description/Justification | Points | Point sum |
+| ---- | ---- | ---- | ---- |
+| Basic features | - A Node.js server with Express<br>- A PostgreSQL database is used<br>- Authentication implemented with JWT<br>- Login and register<br>- Non-authenticated users aren't allowed to do anything (implemented with [Passport](https://www.passportjs.org/))<br>- Profile update via updating the profile text<br>- A user can browse other users and like or dislike them<br>- Chat with matches (mutual likes)<br>- The UI is made responsive with React Material UI components<br>- Documentation describes the technology and usage of the app | 25 | 25 |
+| Utilization of a frontside framework | React is used | 5 | 30 |
+| One can swipe to left or right to dislike or like the profile | Implemented with [react-swipeable](https://file+.vscode-resource.vscode-cdn.net/home/jaakko/juttuja/advanced_web_apps/projekti/react-swipeable "react-swipeable") | 2 | 32 |
+| Use of a pager when there is more than 10 chats available available | The "Matches" view divides the matched users into sets of 10 and displays them on separate pages. Pages are changed with the help of MUI's Pagination component | 2 | 34 |
+| If match is being found the UI gives option to start chat immediately | When the user likes another user, the server checks if the other user also likes the liker. If so, an indication of this is sent in the response and the user is presented with a yes/no modal asking if they wish to start chatting right away. | 2 | 36 |
+| Last edited timestamp is stored and shown within chat | Each message has a timestamp, which is stored and shown in the chat. Messages can't be edited, however. | 1 | 37 |
+| Unit tests | Register, login, like and dislike functionality is tested with 16 different unit tests. | 2 | 39 |
+| A real time chat | The chat is implemented with websockets such that if both users of the chat are online, the messages of the sender appear to the receiver in real time without polling.  | 2 | 41 |
+| Docker | The whole thing can be built as a containerized app with a single command, which I think is worth a point even if its not this course's material. Hopefully this helps with the review process as well. | 1 | 42 |

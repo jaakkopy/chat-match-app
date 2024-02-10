@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
 import UserProfile from '../models/User';
@@ -20,6 +20,7 @@ const Chat = () => {
     const auth = useAuth();
     const fetchHelp = useFetch();
     const { state } = useLocation();
+    const navigate = useNavigate();
     const profile: UserProfile = state.profile; // Read values passed on state
     const [messageHistory, setMessageHistory] = useState<OldChatMessage[]>([]);
     const [message, setMessage] = useState<string>('');
@@ -29,6 +30,21 @@ const Chat = () => {
         shouldReconnect: () => true,
     },
     );
+
+    // Verify that the users have liked each other. Otherwise redirect to profile page
+    useEffect(() => {
+        let f = async () => {
+            const res = await fetchHelp.get(`${getServerAddr()}/api/likes/ismatch/${profile.email}`);
+            if (res.status == 200) {
+                const js = await res.json();
+                // Not a match. The user won't be able to chat with the other user, so just navigate away
+                if (!js.isMatch) {
+                    navigate("/");
+                }
+            }
+        };
+        f();
+    }, []);
 
     // Fetch the message history between the two users
     useEffect(() => {
