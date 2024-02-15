@@ -9,14 +9,6 @@ const pool = new Pool({
     database: process.env.POSTGRES_DB
 });
 
-// Test the connection
-try {
-    pool.query("SELECT 1;");
-} catch (e) {
-    console.error(e);
-    process.exit(1);
-}
-
 export const query = async (queryText: string, parameters?: any[]): Promise<any[]> => {
     const res: QueryResult = await pool.query(queryText, parameters);
     return res.rows;
