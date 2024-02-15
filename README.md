@@ -89,7 +89,7 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5555
-POSTGRES_DATABASE=match
+POSTGRES_DB=match
 JWT_SECRET="123abc"
 ```
 4. Run the test command: `npm run test`.
