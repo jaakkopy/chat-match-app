@@ -38,7 +38,9 @@ authRouter.post("/register",
         };
         // Register the new user.
         const result: ServiceResult = await authService.register(fields, getDB());
-        return res.status(result.status).send(result.msg);
+        if (result.ok)
+            return res.status(result.status).send(result.msg);
+        return res.status(result.status).json({errors: [{path: 'error', msg: result.msg}]});
     } catch (e) {
         console.error(e);
         res.status(500).send("Internal server error");
