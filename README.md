@@ -42,6 +42,15 @@ REACT_APP_PROTOCOL="http"
 REACT_APP_SERVER_HOST="localhost:8000"
 ```
 
+## Important! Permissions of the init.sql file
+Before continuing, please make sure that the `init.sql` file has execute permissions. Otherwise you will get the error "permission denied" when trying to initialize the database.
+
+For example on Linux, you can set every possible permission with
+```
+chmod 777 init.sql
+```
+
+
 ## Running the app with Docker
 If you don't want to install anything (besides Docker and docker-compose), you can use Docker with docker-compose. On the root of the project, you can just run the following command to build and run the containers (the database and the app):
 ```
