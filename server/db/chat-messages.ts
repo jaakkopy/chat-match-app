@@ -2,7 +2,7 @@ import { DBMessages, DBRows } from '../models/db-interface';
 import query from './pool';
 
 
-// Add the given message to the database with the current timestamp (note: depends on the database time zone)
+// Add the given message to the database with the current timestamp (note: depends on the database time zone, which is set in init.sql)
 const insertMessage = async (senderEmail: string, receiverEmail: string, content: string): Promise<DBRows> => {
     return query(
         `INSERT INTO messages (sender, receiver, content, date_sent) VALUES (

@@ -1,6 +1,6 @@
 # About
-- An app made for a school project where users can browse other users, like them and dislike them.
-- The users who have liked each other can chat in real time and send messages even if the other user is offline.
+- An app made where users can browse other users, like them, dislike them, and chat.
+- The users who have liked each other can chat in real time and send messages if the other user is offline as well.
 - The app is based on the standard client/server model.
 
 # Technology choices
@@ -42,7 +42,7 @@ REACT_APP_PROTOCOL="http"
 REACT_APP_SERVER_HOST="localhost:8000"
 ```
 
-## Using Docker
+## Running the app with Docker
 If you don't want to install anything (besides Docker and docker-compose), you can use Docker with docker-compose. On the root of the project, you can just run the following command to build and run the containers (the database and the app):
 ```
 docker-compose up -d --build
@@ -52,7 +52,7 @@ When done, the containers can be removed with:
 docker-compose down
 ```
 
-## Without Docker
+## Running the app without Docker
 If you don't have Docker or don't want to use it, the following steps should be done to install and set up everything:
 
 **Install Node.js**:
@@ -67,7 +67,7 @@ If you don't have Docker or don't want to use it, the following steps should be 
 **database setup**:
 1. Install PostgreSQL for your system
 2. Create a database
-3. From the root of the project, run the initialization script: `psql -U <postgres user> -d <database name> < init.sql`
+3. From the root of the project, run the initialization script (you might also need to give the password): `psql -U <postgres user> -d <database name> < init.sql`
 
 **server setup**:
 1. `cd` into `server`
@@ -76,14 +76,14 @@ If you don't have Docker or don't want to use it, the following steps should be 
 
 If everything was set up correctly, and the database is running, you can run the project:
 - **Development mode**: In the `client` directory, run `npm start`, and in the `server` directory, run `npm run dev`. The UI should be accessible from http://localhost:3000
-- **Production mode**: In the `server` directory, run `npm run start`. The UI should be accessible from http://localhost:8000
+- **Production mode**: In the `server` directory, run `npm run start`. The UI should be accessible from http://localhost:8000 (note: the client build setup has to be done before this)
 
 # Testing guide
 Some tests have been implemented for the server. During development, the tests were ran using a separate Docker container. Other ways work as well, but the following guide is for using the container approach:
 1. On the root of the project, there is a script `create-postgres-container.sh` that you can use. It creates a container and initializes it with the `init.sql` script.
     - For example: `./create-postgres-container.sh postgres-test-db 5555 password` creates a container with the name 'postgres-test-db', sets it to expose the port 5555, and uses 'password' as the password.
 2. Change the working directory to the server: `cd server`. If dependencies are not installed yet, please install them with `npm install`.
-3. In the root of the `server` directory, create a `.env.test` for example with the following entries (change the example values to whichever you chose to use):
+3. In the root of the `server` directory, create a file called `.env.test` with the following entries (change the example values to whichever you chose to use):
 ```
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
@@ -100,6 +100,7 @@ When trying out the app, if you don't want to manually create users to try out a
 ```
 NODE_ENV=<'production' or 'test' depending on which DB you wish to insert to> npx ts-node ./insert-demo-users.ts
 ```
+This will insert 100 users all with the password 'password'. The emails are 'firstlast<number between 0-99 inclusive>@email.com'. To easily test the matches view and chat view, the user 'firstlast0@email.com' is made to like everyone and everyone likes this user as well.
 
 **Using the app**:
 - Starting the app:

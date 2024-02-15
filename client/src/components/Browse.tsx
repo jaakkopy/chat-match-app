@@ -28,7 +28,8 @@ const modalStyle = {
   p: 4,
 };
 
-
+// A modal that appears when the user likes a user that also likes them.
+// Presents the option to start chatting right away
 const MatchModal = ({ modalOpen, onModalYesClick, onModalNoClick }: { modalOpen: boolean, onModalYesClick: () => void, onModalNoClick: () => void, }) => {
   return <Modal
     open={modalOpen}
@@ -45,7 +46,7 @@ const MatchModal = ({ modalOpen, onModalYesClick, onModalNoClick }: { modalOpen:
   </Modal>
 }
 
-
+// A component which renders cards of users and gives the user an option to like/dislike the other users
 const UserBrowser = () => {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -56,12 +57,14 @@ const UserBrowser = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<any>(null);
 
+  // Fetch a set of users to browse
   const fetchUsers = async () => {
     if (auth === null)
       return;
     const res = await fetchHelp.get(`${getServerAddr()}/api/user/browse`);
     if (res.status == 200) {
       const js = await res.json();
+      // Returned length 0: no more users to browse
       if (js.users.length == 0) {
         setHasMore(false);
       }
@@ -81,6 +84,7 @@ const UserBrowser = () => {
     return () => { mounted = false; }
   }, []);
 
+  // The url is either for the like endpoint or dislike endpoint
   const postToLikeOrDislike = async (url: string) => {
     if (auth === null || users.length == 0 || index >= users.length)
       return null;

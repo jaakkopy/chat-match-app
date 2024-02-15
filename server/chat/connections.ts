@@ -1,7 +1,9 @@
 import { WebSocket, RawData } from 'ws';
 import ChatConn from './chat-connection';
+import { ChatConnection } from '../models/chat-interfaces';
 
-const connections: Map<WebSocket, ChatConn> = new Map();
+// Map the websocket to the chat connection object
+const connections: Map<WebSocket, ChatConnection> = new Map();
 
 const setupNewConnection = (ws: WebSocket) => {
     connections.set(ws, new ChatConn(ws));

@@ -16,6 +16,7 @@ import { useFetch } from "./useFetch";
 import { getServerAddr, getWsServerAddr } from "./server_addr";
 
 
+// This component renders the chat of two users
 const Chat = () => {
     const auth = useAuth();
     const fetchHelp = useFetch();

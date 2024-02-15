@@ -21,7 +21,7 @@ import { RegistrationFields } from "./models/auth-interfaces";
         }
         await authService.register(fields, getDB());
     }
-    // make everyone like 'First Last1':
+    // make everyone like 'First Last0':
     await query("INSERT INTO likes (liker, liked) SELECT u1.id, x FROM users u1 CROSS JOIN (SELECT u2.id AS x FROM users u2 WHERE u2.email = 'firstlast0@email.com') WHERE u1.id != x;");
     // make 'First Last0' like everyone else:
     await query("INSERT INTO likes (liker, liked) SELECT x, u1.id FROM users u1 CROSS JOIN (SELECT u2.id AS x FROM users u2 WHERE u2.email = 'firstlast0@email.com') WHERE u1.id != x;");

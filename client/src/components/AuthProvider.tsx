@@ -15,12 +15,15 @@ export interface AuthContextValues {
     isLoggedIn: () => boolean;
 }
 
+// Responsible for handling the authentication state
 const AuthContext = React.createContext<AuthContextValues | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem("email"));
 
+    // Attempt to login the user with the given credentials
+    // Returns null if no errors occured, otherwise returns an array of errors
     const login = async (email: string, password: string) => {
         const res = await fetch(`${getServerAddr()}/api/auth/login`, {
             method: "POST",
@@ -32,6 +35,7 @@ export const AuthProvider = ({ children }: any) => {
             })
         });
         if (res.status == 200) {
+            // Login OK; store the token and email in local storage
             const { token } = await res.json();
             localStorage.setItem("token", token);
             setToken(token);
@@ -43,6 +47,8 @@ export const AuthProvider = ({ children }: any) => {
         return errs.errors;
     };
 
+    // Attempt to register the user with the given information.
+    // Returns null if no errors occured, otherwise returns an array of errors
     const register = async (
         email: string,
         password: string,
@@ -64,6 +70,7 @@ export const AuthProvider = ({ children }: any) => {
         return errs.errors;
     }
 
+    // Logout by removing the entries in the local storage and clearing the state
     const logout = () => {
         localStorage.removeItem("token");
         setToken(null);
@@ -82,7 +89,7 @@ export const AuthProvider = ({ children }: any) => {
         isLoggedIn
     };
 
-
+    // The component works as a wrapper providing the context to all of its child components
     return (
         <AuthContext.Provider value={value}>
             {children}

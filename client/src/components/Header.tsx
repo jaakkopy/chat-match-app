@@ -29,6 +29,7 @@ const HeaderDrawerLinkItem = ({link, text}: {link: string, text: string}) => {
 
 
 // Based on an example from https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
+// This component is responsible for the menu with links to pages
 const Header = ({children}: any) => {
     const auth = useAuth();
     const [mobileOpen, setMobileOpen] = useState(false);

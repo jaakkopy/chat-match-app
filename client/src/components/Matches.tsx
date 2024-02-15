@@ -11,6 +11,8 @@ import { Alert, Avatar, Box, Pagination } from '@mui/material';
 import { useFetch } from './useFetch';
 import { getServerAddr } from './server_addr';
 
+// This component is responsible for displaying the users that the logged in user has liked and who like the logged in user
+// Each user entry can be clicked to open the chat view with the user
 const Matches = () => {
     const [page, setPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);

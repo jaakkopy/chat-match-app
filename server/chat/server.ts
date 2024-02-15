@@ -2,7 +2,6 @@ import { WebSocketServer, Server } from 'ws';
 import { Server as HttpServer } from 'http';
 import setupNewConnection from './connections';
 
-
 const setupWsServer = (server: HttpServer): Server => {
     const wss: Server = new WebSocketServer({ server });
 

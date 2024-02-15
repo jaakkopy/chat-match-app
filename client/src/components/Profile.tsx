@@ -22,7 +22,7 @@ const modalStyle = {
     p: 4,
 };
 
-
+// Responsible for displaying the profile information of the logged in user
 const Profile = () => {
     const auth = useAuth();
     const fetchHelp = useFetch();

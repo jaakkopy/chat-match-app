@@ -12,12 +12,12 @@ const addLike = async (likerEmail: string, likedEmail: string, db: DB): Promise<
     /* 
      * NOTE:
      * The PostgreSQL trigger (defined in init.sql) will make sure that a user can't like and
-     * dislike another user at the same time, the so existence of a dislike is not checked here (same with addDislike below)
+     * dislike another user at the same time, so the existence of a dislike is not checked here (same with addDislike below)
      */ 
     try {
         await db.likes.insertLike(likerEmail, likedEmail);
         // If both users like each other, return an indication of this to the client.
-        // This is used to know if the two users can start chatting
+        // This is used to know if the two users can start chatting right away
         const mutualLikes = await db.likes.verifyMutualLikes(likerEmail, likedEmail);
         return defaultServiceResult(mutualLikes);
     } catch (e) {
@@ -56,7 +56,7 @@ const getMatches = async (email: string, db: DB): Promise<ServiceResult> => {
         const matchEmails: {profile: User, latestMessage: string}[] = matches.map(m => {
             if (m.email1 == email) {
                 // If the first email corresponds to the requester, return the second one's info
-                // This is done due to the slightly inconvenient sql query result
+                // This is done due to the slightly inconvenient sql query result (which works however)
                 return {
                     profile: {
                         email: m.email2,

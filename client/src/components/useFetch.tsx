@@ -8,6 +8,7 @@ export interface FetchCalls {
     del: (url: string) => Promise<Response>;
 }
 
+// Helper functions for fetching. Each function adds the JWT for authorization and checks the return code for errors
 export const useFetch = (): FetchCalls => {
     const auth = useAuth();
     const navigate = useNavigate();
